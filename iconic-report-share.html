@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iconic Workspaces · Paid Media Dashboard · Julio 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f3f4f6;color:#111827;min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px}
+
+/* HEADER */
+.header{background:#111827;border-radius:12px;padding:20px 26px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.header h1{color:#fff;font-size:18px;font-weight:700}
+.header p{color:#9ca3af;font-size:12px;margin-top:2px}
+.badge{background:#064e3b;border:1px solid #065f46;color:#6ee7b7;font-size:10.5px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap}
+.badge-warn{background:#7c2d12;border:1px solid #9a3412;color:#fed7aa;font-size:10.5px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap}
+
+/* SECTION LABELS */
+.section-label{font-size:10.5px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.9px;margin-bottom:10px;margin-top:4px}
+
+/* ALERT BOX */
+.alert{background:#fefce8;border:1px solid #fde047;border-left:4px solid #f59e0b;border-radius:8px;padding:11px 16px;margin-bottom:18px;font-size:12.5px;color:#713f12;line-height:1.5}
+.alert strong{color:#92400e}
+.alert-red{background:#fef2f2;border:1px solid #fca5a5;border-left:4px solid #ef4444;border-radius:8px;padding:11px 16px;margin-bottom:18px;font-size:12.5px;color:#7f1d1d;line-height:1.5}
+.alert-red strong{color:#991b1b}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px}
+@media(max-width:640px){.kpi-grid{grid-template-columns:1fr 1fr}}
+.kpi{background:#fff;border-radius:10px;padding:15px 18px;border:1px solid #e5e7eb;border-left:4px solid var(--accent)}
+.kpi-label{font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.kpi-value{font-size:24px;font-weight:800;color:var(--accent);line-height:1.1}
+.kpi-value.nd{font-size:18px;color:#9ca3af}
+.kpi-sub{font-size:11px;color:#9ca3af;margin-top:3px}
+.kpi.dim{opacity:.7;border-left-style:dashed}
+
+/* TWO-COLUMN */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:660px){.two-col{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:10px;border:1px solid #e5e7eb;padding:16px}
+.card h3{font-size:12.5px;font-weight:700;color:#374151;margin-bottom:12px}
+.chart-wrap{position:relative;width:100%;height:210px}
+
+/* WON TABLE */
+.table-wrap{background:#fff;border-radius:10px;border:1px solid #e5e7eb;overflow:hidden;margin-bottom:20px}
+table{width:100%;border-collapse:collapse}
+thead th{padding:9px 14px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #e5e7eb}
+.thead-paid{background:#f0fdf4}
+.thead-paid th{color:#16a34a}
+.thead-all{background:#f9fafb}
+.thead-all th{color:#6b7280}
+tbody tr{border-bottom:1px solid #f3f4f6}
+tbody tr:hover{background:#fafafa}
+tbody tr:last-child{border-bottom:none}
+td{padding:9px 14px;font-size:12.5px}
+.rev{text-align:right;font-weight:700}
+.rev.paid{color:#16a34a}
+.rev.other{color:#6b7280}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}
+.tag.meta{background:#dbeafe;color:#1d4ed8}
+.tag.google{background:#fee2e2;color:#991b1b}
+.tag.other{background:#f3f4f6;color:#6b7280}
+.tag.working{background:#dcfce7;color:#166534}
+.pl-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}
+.pl-dt{background:#dbeafe;color:#1d4ed8}
+.pl-av{background:#dcfce7;color:#15803d}
+.total-row{background:#f0fdf4!important;font-weight:700}
+.total-row.gray{background:#f9fafb!important}
+
+/* PAID MEDIA TABLE */
+.pm th{color:#6b7280}
+.pm td,.pm th{text-align:right}
+.pm td:first-child,.pm th:first-child{text-align:left}
+.meta-c{color:#1877f2;font-weight:600}
+.goog-c{color:#ea4335;font-weight:600}
+
+/* PIPELINE GRID */
+.pipe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:660px){.pipe-grid{grid-template-columns:1fr}}
+.pipe-card{background:#fff;border-radius:10px;border:1px solid #e5e7eb;padding:14px}
+.pipe-card.av{border-top:3px solid #16a34a}
+.pipe-card.dt{border-top:3px solid #0284c7}
+.pipe-card.comb{border-top:3px solid #111827}
+.pipe-title{font-size:13px;font-weight:700;margin-bottom:10px;color:#111827}
+.pipe-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f3f4f6;font-size:12px}
+.pipe-row:last-child{border:none}
+.pipe-lbl{color:#6b7280}
+.pipe-val{font-weight:700}
+.c-won{color:#16a34a}
+.c-open{color:#0284c7}
+.c-grey{color:#9ca3af}
+
+/* FOOTER */
+.footer{text-align:center;font-size:10.5px;color:#9ca3af;padding:14px 0 4px;border-top:1px solid #e5e7eb;margin-top:4px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>Iconic Workspaces · Paid Media Dashboard</h1>
+    <p>1 Julio – 23 Julio 2026 &nbsp;·&nbsp; Meta Ads + Google Ads + GHL CRM (fuente: tag facebook / google_ads)</p>
+  </div>
+  <div class="badge">GHL LIVE · Jul 23</div>
+</div>
+
+<!-- ATTRIBUTION NOTE -->
+<div class="alert">
+  <strong>Scope exclusivamente digital:</strong> Meta Ads (paid social) + Google Ads (paid search). EDDM y offline excluidos. Atribución Won por <code>source=facebook</code> / <code>source=google_ads</code> o tag GHL. GHL: solo pipelines Iconic Downtown + Iconic Aventura (read-only). Cuenta activa Meta: Iconic Aventura (act_388480804021264).
+</div>
+
+<!-- KPI ROW 1: PAID MEDIA SPEND -->
+<div class="section-label">Inversión Paid Media — Julio 1–23, 2026</div>
+<div class="kpi-grid" style="margin-bottom:14px">
+  <div class="kpi" style="--accent:#1877f2">
+    <div class="kpi-label">Meta Ads — Gasto</div>
+    <div class="kpi-value">$1,042</div>
+    <div class="kpi-sub">40 leads · CPL $19.17 · 41,549 impresiones</div>
+  </div>
+  <div class="kpi" style="--accent:#ea4335">
+    <div class="kpi-label">Google Ads — Gasto</div>
+    <div class="kpi-value">$979</div>
+    <div class="kpi-sub">1 conv. plataforma · 188 clics · 2 campañas</div>
+  </div>
+  <div class="kpi" style="--accent:#111827">
+    <div class="kpi-label">Total Invertido</div>
+    <div class="kpi-value">$2,021</div>
+    <div class="kpi-sub">Jul 1–23 · Meta + Google</div>
+  </div>
+</div>
+
+<!-- KPI ROW 2: PAID ROAS -->
+<div class="section-label">ROAS por Canal (atribución GHL: source / tag)</div>
+<div class="kpi-grid" style="margin-bottom:20px">
+  <div class="kpi" style="--accent:#1877f2">
+    <div class="kpi-label">Meta — Leads (form)</div>
+    <div class="kpi-value">40</div>
+    <div class="kpi-sub">CPL $19.17 · 755 clics · CTR 1.82% · 17,839 reach</div>
+  </div>
+  <div class="kpi" style="--accent:#ea4335">
+    <div class="kpi-label">Google ROAS (Jul)</div>
+    <div class="kpi-value">0×</div>
+    <div class="kpi-sub">$0 paid Won · pipeline activo · 1 conv plataforma</div>
+  </div>
+  <div class="kpi" style="--accent:#f59e0b">
+    <div class="kpi-label">Blended ROAS paid digital</div>
+    <div class="kpi-value">0×</div>
+    <div class="kpi-sub">$0 closed / $2,021 spend · 10 leads en pipeline</div>
+  </div>
+</div>
+
+<!-- CHARTS -->
+<div class="section-label">Performance Visual — Julio 2026</div>
+<div class="two-col" style="margin-bottom:20px">
+  <div class="card">
+    <h3>Gasto por Campaña · Meta + Google (Jul 1–23)</h3>
+    <div class="chart-wrap"><canvas id="cplChart"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Revenue Won por Canal — Julio 2026</h3>
+    <div class="chart-wrap"><canvas id="wonChart"></canvas></div>
+  </div>
+</div>
+
+<!-- WON TABLE — PAID ONLY -->
+<div class="section-label">Won Atribuido a Paid Digital — Julio 1–23, 2026</div>
+<div class="table-wrap" style="margin-bottom:14px">
+  <table>
+    <thead class="thead-paid">
+      <tr>
+        <th>Cliente</th><th>Pipeline</th><th>Fuente GHL</th><th>Tag GHL</th><th style="text-align:right">Revenue</th><th>Fecha Won</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="6" style="text-align:center;padding:20px;color:#9ca3af;font-style:italic;font-size:12px">
+          Sin won pagos confirmados en julio (Jul 1–23). <br>
+          Nota: Billy Vaisberg ($119) y Hon Chung ($4,194) cerraron desde tours GHL — sin atribución digital pagada. <br>
+          1 deal adicional Downtown requiere verificación manual en GHL.
+        </td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="4"><strong>Meta/Facebook Paid Social Won</strong></td>
+        <td class="rev paid" style="font-size:15px">$0</td>
+        <td></td>
+      </tr>
+      <tr class="total-row" style="background:#fff7ed!important">
+        <td colspan="4"><strong>Google Ads Paid Search Won</strong></td>
+        <td class="rev" style="font-size:15px;color:#ea4335;font-weight:800">$0</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- WON TABLE — OTROS CANALES DIGITALES -->
+<div class="section-label">Won — Otros Canales (In-Person · Sin atribución digital pagada)</div>
+<div class="table-wrap" style="margin-bottom:20px">
+  <table>
+    <thead class="thead-all">
+      <tr>
+        <th>Cliente</th><th>Pipeline</th><th>Fuente</th><th>Tag GHL</th><th style="text-align:right">Revenue</th><th>Fecha Won</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Billy Vaisberg</td>
+        <td><span class="pl-badge pl-av">Aventura</span></td>
+        <td>Aventura Tour Cal.</td>
+        <td><span class="tag other">—</span></td>
+        <td class="rev other">$119</td>
+        <td>Jul 14</td>
+      </tr>
+      <tr>
+        <td>Hon Chung <small style="color:#6b7280">· Win Win Tobacco</small></td>
+        <td><span class="pl-badge pl-dt">Downtown</span></td>
+        <td>Downtown Tour Cal.</td>
+        <td><span class="tag other">ghltornd</span></td>
+        <td class="rev other">$4,194</td>
+        <td>Jul 22</td>
+      </tr>
+      <tr class="total-row gray">
+        <td colspan="4"><strong>Total Otros Canales (2 confirmados · +1 DT en verificación)</strong></td>
+        <td class="rev other" style="font-size:15px">$4,313</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- OPEN PIPELINE CON PAID TAGS -->
+<div class="section-label">Pipeline Abierto con Paid Attribution Activa — Julio 1–23, 2026 · Live GHL</div>
+<div class="table-wrap" style="margin-bottom:20px">
+  <table>
+    <thead class="thead-all">
+      <tr>
+        <th>Lead</th><th>Pipeline</th><th>Canal Paid</th><th>Source GHL</th><th>Tag GHL</th><th>Ingresó</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Downtown -->
+      <tr><td>Claudia Molina — Virtual Office</td><td><span class="pl-badge pl-dt">Downtown</span></td><td><span class="tag meta">Meta</span></td><td><code style="font-size:11px">facebook</code></td><td><span class="tag working">facebook ✓</span></td><td>Jul 23</td></tr>
+      <tr><td>Dr-Ralph O'king — Private Office</td><td><span class="pl-badge pl-dt">Downtown</span></td><td><span class="tag meta">Meta</span></td><td><code style="font-size:11px">facebook</code></td><td><span class="tag working">facebook ✓</span></td><td>Jul 20</td></tr>
+      <tr><td>ZakarYah BanaYahu — Private Office</td><td><span class="pl-badge pl-dt">Downtown</span></td><td><span class="tag meta">Meta</span></td><td><code style="font-size:11px">facebook</code></td><td><span class="tag working">facebook ✓</span></td><td>Jul 19</td></tr>
+      <tr><td>Ible Patrick Elijah — Private Office</td><td><span class="pl-badge pl-dt">Downtown</span></td><td><span class="tag meta">Meta</span></td><td><code style="font-size:11px">facebook</code></td><td><span class="tag working">facebook ✓</span></td><td>Jul 18</td></tr>
+      <tr><td>Lester Tellez — Private Office</td><td><span class="pl-badge pl-dt">Downtown</span></td><td><span class="tag meta">Meta</span></td><td><code style="font-size:11px">facebook</code></td><td><span class="tag working">facebook ✓</span></td><td>Jul 15</td></tr>
+      <!-- Aventura -->
+      <tr><td>Leron Abeckaser — Private Office</td><td><span class="pl-badge pl-av">Aventura</span></td><td><span class="tag meta">Meta</span></td><td><code style="font-size:11px">facebook</code></td><td><span class="tag working">facebook ✓</span></td><td>Jul 23</td></tr>
+      <tr><td>Maylin Del Valle Velasquez Galea</td><td><span class="pl-badge pl-av">Aventura</span></td><td><span class="tag meta">Meta</span></td><td><code style="font-size:11px">facebook</code></td><td><span class="tag working">facebook ✓</span></td><td>Jul 22</td></tr>
+      <tr><td>Bernardo Britto — Coworking Space</td><td><span class="pl-badge pl-av">Aventura</span></td><td><span class="tag meta">Meta</span></td><td><code style="font-size:11px">facebook</code></td><td><span class="tag working">facebook ✓</span></td><td>Jul 22</td></tr>
+      <tr><td>Vera D. Godfrey — Private Office</td><td><span class="pl-badge pl-av">Aventura</span></td><td><span class="tag meta">Meta</span></td><td><code style="font-size:11px">facebook</code></td><td><span class="tag working">facebook ✓</span></td><td>Jul 20</td></tr>
+      <tr><td>Geri Weiner — Private Office</td><td><span class="pl-badge pl-av">Aventura</span></td><td><span class="tag meta">Meta</span></td><td><code style="font-size:11px">facebook</code></td><td><span class="tag working">facebook ✓</span></td><td>Jul 16</td></tr>
+      <tr class="total-row gray">
+        <td colspan="2"><strong>10 leads paid activos en pipeline</strong></td>
+        <td><span class="tag meta" style="margin-right:4px">Meta: 10</span><span class="tag google">Google: 0</span></td>
+        <td colspan="3" style="color:#6b7280;font-size:11px">Tag facebook verificado ✓ · Sin leads Google Ads en Jul</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAID MEDIA SPEND TABLE -->
+<div class="section-label">Paid Media Detalle por Campaña — Julio 1–23, 2026</div>
+<div class="table-wrap" style="margin-bottom:20px">
+  <table class="pm">
+    <thead class="thead-all">
+      <tr>
+        <th>Campaña</th><th>Gasto</th><th>Clics</th><th>Impresiones / Leads</th><th>CPL / CPC</th><th>Won $ GHL</th><th>ROAS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="meta-c">Meta — Virtual Office Purchase (Paid Social)</td>
+        <td>$275.07</td>
+        <td>244</td>
+        <td>14,198 imp.</td>
+        <td style="color:#9ca3af">—</td>
+        <td style="color:#9ca3af">$0</td>
+        <td style="color:#9ca3af">—</td>
+      </tr>
+      <tr>
+        <td class="meta-c">Meta — Tailored Leads (Paid Social)</td>
+        <td>$766.72</td>
+        <td>511</td>
+        <td>27,351 imp. · 40 leads</td>
+        <td>$19.17 CPL</td>
+        <td style="color:#9ca3af">$0</td>
+        <td style="color:#9ca3af">—</td>
+      </tr>
+      <tr class="total-row" style="background:#eff6ff!important">
+        <td><strong>TOTAL META ADS (act_388480804021264)</strong></td>
+        <td><strong>$1,041.79</strong></td><td>755</td><td>41,549 imp. · 40 leads</td>
+        <td>$19.17 CPL</td>
+        <td style="color:#9ca3af">$0</td>
+        <td style="color:#9ca3af">—</td>
+      </tr>
+      <tr>
+        <td class="goog-c">[SP] Virtual Offices – Miami + Aventura</td>
+        <td>$476.64</td><td>112</td><td>1 conv.</td>
+        <td>$4.26 CPC</td>
+        <td style="color:#9ca3af">$0</td>
+        <td style="color:#9ca3af">—</td>
+      </tr>
+      <tr>
+        <td class="goog-c">[SP] Meeting Rooms – Downtown</td>
+        <td>$502.16</td><td>76</td><td>0 conv.</td>
+        <td>$6.61 CPC</td>
+        <td style="color:#9ca3af">$0</td>
+        <td style="color:#9ca3af">—</td>
+      </tr>
+      <tr class="total-row gray">
+        <td><strong>TOTAL GOOGLE ADS</strong></td>
+        <td><strong>$978.80</strong></td><td>188</td><td>1 conv.</td>
+        <td>$5.21 CPC</td>
+        <td style="color:#9ca3af">$0</td>
+        <td style="color:#9ca3af">—</td>
+      </tr>
+      <tr class="total-row" style="background:#f0fdf4!important">
+        <td><strong>TOTAL PAID DIGITAL</strong></td>
+        <td><strong>$2,020.59</strong></td><td>943</td><td>40 leads Meta · 1 conv. Google</td>
+        <td>—</td>
+        <td><strong>$0</strong></td>
+        <td style="color:#9ca3af">—</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- FUNNEL CONVERSION SECTION -->
+<!-- ============================================================ -->
+<div class="section-label" style="margin-top:8px">Conversión del Pipeline — Todos los Canales · Jul 1–23, 2026</div>
+
+<div class="alert" style="margin-bottom:16px">
+  <strong>Scope ampliado:</strong> Incluye <em>todos</em> los leads del CRM del período (paid, orgánico, EDDM, referidos, walk-in) — no filtrado por canal. Filtro: createdAt Jul 1–23, 2026. GHL: read-only · pipelines Iconic Aventura + Iconic Downtown.
+</div>
+
+<!-- COMBINED SUMMARY KPIs -->
+<div class="kpi-grid" style="margin-bottom:14px">
+  <div class="kpi" style="--accent:#059669">
+    <div class="kpi-label">Total Leads CRM (Jul 1–23)</div>
+    <div class="kpi-value">54</div>
+    <div class="kpi-sub">Aventura 26 · Downtown 28</div>
+  </div>
+  <div class="kpi" style="--accent:#059669">
+    <div class="kpi-label">Purchase / Won (Jul 1–23)</div>
+    <div class="kpi-value">3</div>
+    <div class="kpi-sub">Aventura 1 · Downtown 2 · Lead→Deal: 5.6%</div>
+  </div>
+  <div class="kpi" style="--accent:#0284c7">
+    <div class="kpi-label">Pipeline Activo (open)</div>
+    <div class="kpi-value">29</div>
+    <div class="kpi-sub">Aventura 17 · Downtown 12 · 53.7% del total</div>
+  </div>
+</div>
+
+<!-- FUNNEL BY PIPELINE -->
+<div class="two-col" style="margin-bottom:20px">
+
+  <!-- AVENTURA FUNNEL -->
+  <div class="card" style="border-top:3px solid #16a34a">
+    <h3 style="color:#15803d">Iconic Aventura — Jul 1–23, 2026</h3>
+
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#f0fdf4;border-radius:6px;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:600;color:#374151">Total Leads Ingresados</span>
+        <span style="font-size:15px;font-weight:800;color:#15803d">26</span>
+      </div>
+      <div style="text-align:center;font-size:10px;color:#9ca3af;margin:2px 0">▼ 23.1% llegaron a tour</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#eff6ff;border-radius:6px;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:600;color:#374151">Tours Agendados (Calendario GHL)</span>
+        <div style="text-align:right">
+          <span style="font-size:15px;font-weight:800;color:#1d4ed8">6</span>
+          <span style="font-size:10px;color:#6b7280;display:block">Lead→Tour: 23.1%</span>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:10px;color:#9ca3af;margin:2px 0">▼ 16.7% tour→deal</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#dcfce7;border-radius:6px;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:600;color:#374151">Purchase / Won</span>
+        <div style="text-align:right">
+          <span style="font-size:15px;font-weight:800;color:#16a34a">1</span>
+          <span style="font-size:10px;color:#6b7280;display:block">Lead→Deal: 3.8%</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:10.5px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Distribución de Status</div>
+    <div style="font-size:11.5px;margin-bottom:3px;display:flex;justify-content:space-between"><span style="color:#0284c7">● Open (activos)</span><span style="font-weight:700">17 <span style="color:#9ca3af;font-weight:400">(65.4%)</span></span></div>
+    <div style="font-size:11.5px;margin-bottom:3px;display:flex;justify-content:space-between"><span style="color:#dc2626">● Lost</span><span style="font-weight:700">5 <span style="color:#9ca3af;font-weight:400">(19.2%)</span></span></div>
+    <div style="font-size:11.5px;margin-bottom:3px;display:flex;justify-content:space-between"><span style="color:#f59e0b">● Abandoned</span><span style="font-weight:700">3 <span style="color:#9ca3af;font-weight:400">(11.5%)</span></span></div>
+    <div style="font-size:11.5px;margin-bottom:3px;display:flex;justify-content:space-between"><span style="color:#16a34a">● Won (Purchase)</span><span style="font-weight:700">1 <span style="color:#9ca3af;font-weight:400">(3.8%)</span></span></div>
+    <div style="margin-top:8px;padding:7px 10px;background:#fefce8;border-radius:6px;font-size:11px;color:#713f12">
+      <strong>Billy Vaisberg</strong> (Jul 13 → Won Jul 14) · Coworking Desk · 1 de 6 tours convertido. Tours confirmados: Yaron (Jul 6), John Carroll (Jul 9), Loveth M. (Jul 10), Billy ✓ (Jul 13), Danielle (Jul 13), Paula (Jul 23).
+    </div>
+  </div>
+
+  <!-- DOWNTOWN FUNNEL -->
+  <div class="card" style="border-top:3px solid #0284c7">
+    <h3 style="color:#0369a1">Iconic Downtown — Jul 1–23, 2026</h3>
+
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#eff6ff;border-radius:6px;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:600;color:#374151">Total Leads Ingresados</span>
+        <span style="font-size:15px;font-weight:800;color:#0369a1">28</span>
+      </div>
+      <div style="text-align:center;font-size:10px;color:#9ca3af;margin:2px 0">▼ 10.7% llegaron a tour</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#eff6ff;border-radius:6px;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:600;color:#374151">Tours Agendados (Calendario GHL)</span>
+        <div style="text-align:right">
+          <span style="font-size:15px;font-weight:800;color:#1d4ed8">3</span>
+          <span style="font-size:10px;color:#6b7280;display:block">Lead→Tour: 10.7%</span>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:10px;color:#9ca3af;margin:2px 0">▼ 33.3% tour→deal</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:#dcfce7;border-radius:6px;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:600;color:#374151">Purchase / Won</span>
+        <div style="text-align:right">
+          <span style="font-size:15px;font-weight:800;color:#16a34a">2</span>
+          <span style="font-size:10px;color:#6b7280;display:block">Lead→Deal: 7.1%</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:10.5px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px">Distribución de Status</div>
+    <div style="font-size:11.5px;margin-bottom:3px;display:flex;justify-content:space-between"><span style="color:#0284c7">● Open (activos)</span><span style="font-weight:700">12 <span style="color:#9ca3af;font-weight:400">(42.9%)</span></span></div>
+    <div style="font-size:11.5px;margin-bottom:3px;display:flex;justify-content:space-between"><span style="color:#dc2626">● Lost</span><span style="font-weight:700">14 <span style="color:#9ca3af;font-weight:400">(50.0%)</span></span></div>
+    <div style="font-size:11.5px;margin-bottom:3px;display:flex;justify-content:space-between"><span style="color:#f59e0b">● Abandoned</span><span style="font-weight:700">0 <span style="color:#9ca3af;font-weight:400">(0%)</span></span></div>
+    <div style="font-size:11.5px;margin-bottom:3px;display:flex;justify-content:space-between"><span style="color:#16a34a">● Won (Purchase)</span><span style="font-weight:700">2 <span style="color:#9ca3af;font-weight:400">(7.1%)</span></span></div>
+    <div style="margin-top:8px;padding:7px 10px;background:#fefce8;border-radius:6px;font-size:11px;color:#713f12">
+      <strong>Hon Chung</strong> (Tour Jul 22 → Won Jul 22) · $4,194 · 1 de 3 tours convertido. Tours confirmados: Will Hunter (Jul 7), Doug Mayorga (Jul 13), Hon Chung ✓ (Jul 22). Basado en calendario GHL (iglsrHSnBrIwyJENp96c).
+    </div>
+  </div>
+
+</div>
+
+<!-- CONVERSION RATES SUMMARY TABLE -->
+<div class="section-label">Resumen de Tasas de Conversión — Jul 1–23, 2026</div>
+<div class="table-wrap" style="margin-bottom:20px">
+  <table>
+    <thead class="thead-all">
+      <tr>
+        <th>Métrica</th>
+        <th style="text-align:center">Aventura</th>
+        <th style="text-align:center">Downtown</th>
+        <th style="text-align:center">Combinado</th>
+        <th>Nota</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Leads Ingresados (Jul 1–23)</strong></td>
+        <td style="text-align:center;font-weight:700">26</td>
+        <td style="text-align:center;font-weight:700">28</td>
+        <td style="text-align:center;font-weight:700">54</td>
+        <td style="font-size:11px;color:#6b7280">Todos los canales · filtrado por createdAt</td>
+      </tr>
+      <tr>
+        <td><strong>Tours Agendados</strong></td>
+        <td style="text-align:center;color:#1d4ed8;font-weight:700">6</td>
+        <td style="text-align:center;color:#1d4ed8;font-weight:700">3</td>
+        <td style="text-align:center;color:#1d4ed8;font-weight:700">9</td>
+        <td style="font-size:11px;color:#6b7280">Citas confirmadas en calendarios GHL Jul 1–23</td>
+      </tr>
+      <tr>
+        <td><strong>Lead → Tour</strong></td>
+        <td style="text-align:center;color:#1d4ed8;font-weight:700">23.1%</td>
+        <td style="text-align:center;color:#1d4ed8;font-weight:700">10.7%</td>
+        <td style="text-align:center;color:#1d4ed8;font-weight:700">16.7%</td>
+        <td style="font-size:11px;color:#6b7280">6 de 26 (Av) · 3 de 28 (DT) · 9 de 54 (total)</td>
+      </tr>
+      <tr>
+        <td><strong>Tour → Deal</strong></td>
+        <td style="text-align:center;color:#f59e0b;font-weight:700">16.7%</td>
+        <td style="text-align:center;color:#f59e0b;font-weight:700">33.3%</td>
+        <td style="text-align:center;color:#f59e0b;font-weight:700">22.2%</td>
+        <td style="font-size:11px;color:#6b7280">Billy Vaisberg (Av) · Hon Chung (DT) · 2 de 9 tours cerrados</td>
+      </tr>
+      <tr>
+        <td><strong>Purchase / Won</strong></td>
+        <td style="text-align:center;color:#16a34a;font-weight:700">1</td>
+        <td style="text-align:center;color:#16a34a;font-weight:700">2</td>
+        <td style="text-align:center;color:#16a34a;font-weight:700">3</td>
+        <td style="font-size:11px;color:#6b7280">Stage "Purchase" en ambos pipelines</td>
+      </tr>
+      <tr>
+        <td><strong>Lead → Deal</strong></td>
+        <td style="text-align:center;color:#16a34a;font-weight:700">3.8%</td>
+        <td style="text-align:center;color:#16a34a;font-weight:700">7.1%</td>
+        <td style="text-align:center;color:#16a34a;font-weight:700">5.6%</td>
+        <td style="font-size:11px;color:#6b7280">Won / Total leads ingresados</td>
+      </tr>
+      <tr>
+        <td><strong>Open (pipeline activo)</strong></td>
+        <td style="text-align:center">17 <span style="color:#9ca3af">(65.4%)</span></td>
+        <td style="text-align:center">12 <span style="color:#9ca3af">(42.9%)</span></td>
+        <td style="text-align:center">29 <span style="color:#9ca3af">(53.7%)</span></td>
+        <td style="font-size:11px;color:#6b7280">Aún en proceso de cierre</td>
+      </tr>
+      <tr>
+        <td><strong>Disqualificados (Lost + Abandoned)</strong></td>
+        <td style="text-align:center">8 <span style="color:#9ca3af">(30.8%)</span></td>
+        <td style="text-align:center">14 <span style="color:#9ca3af">(50.0%)</span></td>
+        <td style="text-align:center">22 <span style="color:#9ca3af">(40.7%)</span></td>
+        <td style="font-size:11px;color:#6b7280">Lost + Abandoned en el período</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- FUNNEL CHART -->
+<div class="section-label">Visualización del Funnel — Jul 1–23, 2026</div>
+<div class="two-col" style="margin-bottom:20px">
+  <div class="card">
+    <h3>Funnel Aventura — Distribución de Status</h3>
+    <div class="chart-wrap"><canvas id="funnelAv"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Funnel Downtown — Distribución de Status</h3>
+    <div class="chart-wrap"><canvas id="funnelDt"></canvas></div>
+  </div>
+</div>
+
+<div class="footer">
+  Fuentes: Meta Ads (act_388480804021264 Iconic Aventura) · Google Ads Windsor.ai (197-160-1762) · GHL MCP read-only (Iconic Downtown + Iconic Aventura pipelines)<br>
+  Scope: canales digitales únicamente · EDDM y paid offline excluidos · Won = lastStatusChangeAt ≥ 1 Jul 2026<br>
+  Atribución GHL: source=facebook → Meta Paid Social · source=google_ads → Google Paid Search · Actualizado: 23 Jul 2026<br>
+  Tours: Aventura 6 citas (cal. YFLLYEx3vjs1QHCrKNFC) · Downtown 3 citas (cal. iglsrHSnBrIwyJENp96c) · Basado en calendarios GHL Jul 1–23 · 1 cancelled (Pablo Barrio) excluido
+</div>
+</div>
+
+<script>
+// Paid media spend by campaign/channel
+new Chart(document.getElementById('cplChart'),{
+  type:'bar',
+  data:{
+    labels:['Meta\nVirtual Office Purchase','Meta\nTailored Leads','Google\nVirtual Offices','Google\nMeeting Rooms'],
+    datasets:[{
+      label:'Gasto (USD)',
+      data:[275.07, 766.72, 476.64, 502.16],
+      backgroundColor:['#3b82f6','#93c5fd','#ea4335','#f87171'],
+      borderRadius:6,borderSkipped:false
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:c=>' $'+c.raw.toFixed(2)+' gasto'}}
+    },
+    scales:{
+      y:{beginAtZero:true,grid:{color:'#f3f4f6'},ticks:{callback:v=>'$'+v,font:{size:10}}},
+      x:{grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+
+// Won attribution chart
+new Chart(document.getElementById('wonChart'),{
+  type:'bar',
+  data:{
+    labels:['Meta Paid Social\n($0 won)','Google Paid Search\n($0 won)','Tour Calendar\n(Av $119 + DT $4,194)'],
+    datasets:[{
+      data:[0, 0, 4313],
+      backgroundColor:['#3b82f6','#ea4335','#374151'],
+      borderRadius:5,borderSkipped:false
+    }]
+  },
+  options:{
+    indexAxis:'y',
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:c=>' $'+c.raw.toLocaleString()}}
+    },
+    scales:{
+      x:{beginAtZero:true,grid:{color:'#f3f4f6'},ticks:{callback:v=>'$'+(v>=1000?(v/1000).toFixed(0)+'k':v),font:{size:10}}},
+      y:{grid:{display:false},ticks:{font:{size:10}}}
+    }
+  }
+});
+
+// Funnel donut — Aventura (Jul 1–23)
+new Chart(document.getElementById('funnelAv'),{
+  type:'doughnut',
+  data:{
+    labels:['Open (17)','Lost (5)','Abandoned (3)','Won / Purchase (1)'],
+    datasets:[{
+      data:[17,5,3,1],
+      backgroundColor:['#3b82f6','#ef4444','#f59e0b','#16a34a'],
+      borderWidth:2,borderColor:'#fff'
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    cutout:'60%',
+    plugins:{
+      legend:{position:'bottom',labels:{font:{size:10},padding:8,boxWidth:12}},
+      tooltip:{callbacks:{label:c=>' '+c.label+' — '+(c.raw/26*100).toFixed(1)+'%'}}
+    }
+  }
+});
+
+// Funnel donut — Downtown (Jul 1–23)
+new Chart(document.getElementById('funnelDt'),{
+  type:'doughnut',
+  data:{
+    labels:['Open (12)','Lost (14)','Abandoned (0)','Won / Purchase (2)'],
+    datasets:[{
+      data:[12,14,0,2],
+      backgroundColor:['#3b82f6','#ef4444','#f59e0b','#16a34a'],
+      borderWidth:2,borderColor:'#fff'
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    cutout:'60%',
+    plugins:{
+      legend:{position:'bottom',labels:{font:{size:10},padding:8,boxWidth:12}},
+      tooltip:{callbacks:{label:c=>' '+c.label+' — '+(c.raw/28*100).toFixed(1)+'%'}}
+    }
+  }
+});
+</script>
+</body>
+</html>
