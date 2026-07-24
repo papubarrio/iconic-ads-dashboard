@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iconic Workspaces — Cross-Channel Report · Jun 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --meta:#1877f2; --google:#ea4335; --ghl:#1aaf54; --eddm:#f59e0b; --email:#a78bfa;
+    --ga4:#e8710a; --organic:#0f9d58;
+    --bg:#0f1117; --card:#1a1d27; --border:#2d3148;
+    --text:#e8eaf6; --muted:#8892b0;
+    --won:#1aaf54; --open:#3b82f6; --lost:#ef4444; --abandoned:#f59e0b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;}
+
+  .header{background:linear-gradient(135deg,#0d1b3e 0%,#1a1d27 100%);border-bottom:1px solid var(--border);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+  .header-left h1{font-size:22px;font-weight:700;}
+  .header-left h1 span{color:#60a5fa;}
+  .header-left p{color:var(--muted);font-size:13px;margin-top:4px;}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .badge{border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;border:1px solid;}
+  .badge-ghl{background:rgba(26,175,84,.15);color:var(--ghl);border-color:rgba(26,175,84,.3);}
+  .badge-meta{background:rgba(24,119,242,.15);color:var(--meta);border-color:rgba(24,119,242,.3);}
+  .badge-google{background:rgba(234,67,53,.15);color:var(--google);border-color:rgba(234,67,53,.3);}
+  .badge-ga4{background:rgba(232,113,10,.15);color:var(--ga4);border-color:rgba(232,113,10,.3);}
+  .badge-eddm{background:rgba(245,158,11,.15);color:var(--eddm);border-color:rgba(245,158,11,.3);}
+  .badge-email{background:rgba(167,139,250,.15);color:var(--email);border-color:rgba(167,139,250,.3);}
+  .badge-period{background:rgba(255,255,255,.06);color:var(--muted);border-color:var(--border);}
+
+  .main{padding:20px 28px;max-width:1440px;}
+  .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:24px 0 12px;}
+
+  .grid-6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+  .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  @media(max-width:1200px){.grid-6{grid-template-columns:repeat(3,1fr);}.grid-5{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:900px){.grid-4,.grid-3,.grid-2{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:600px){.grid-6,.grid-5,.grid-4,.grid-3,.grid-2{grid-template-columns:1fr;}}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+  .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .card-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);}
+  .card-channel{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+  .ch-meta{background:rgba(24,119,242,.15);color:var(--meta);}
+  .ch-google{background:rgba(234,67,53,.15);color:var(--google);}
+  .ch-ghl{background:rgba(26,175,84,.15);color:var(--ghl);}
+  .ch-ga4{background:rgba(232,113,10,.15);color:var(--ga4);}
+  .ch-eddm{background:rgba(245,158,11,.15);color:var(--eddm);}
+  .ch-email{background:rgba(167,139,250,.15);color:var(--email);}
+  .ch-organic{background:rgba(15,157,88,.15);color:var(--organic);}
+  .kpi-value{font-size:26px;font-weight:800;line-height:1;letter-spacing:-0.5px;}
+  .kpi-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+  .kpi-sub strong{color:var(--text);}
+
+  .alert{border-radius:10px;padding:10px 14px;font-size:12px;margin-bottom:10px;}
+  .alert-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);color:#fbbf24;}
+  .alert-warn strong{color:#fcd34d;}
+  .alert-info{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.3);color:#93c5fd;}
+  .alert-info strong{color:#bfdbfe;}
+  .alert-success{background:rgba(26,175,84,.08);border:1px solid rgba(26,175,84,.3);color:#6ee7b7;}
+  .alert-success strong{color:#a7f3d0;}
+
+  .pipeline-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+  .pipeline-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .pipeline-dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .pipeline-dot.aventura{background:#60a5fa;}
+  .pipeline-dot.downtown{background:#a78bfa;}
+  .status-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+  .status-chip{border-radius:8px;padding:6px 10px;text-align:center;flex:1;min-width:55px;}
+  .status-chip .num{font-size:20px;font-weight:800;display:block;line-height:1;}
+  .status-chip .lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-top:2px;}
+  .chip-won{background:rgba(26,175,84,.12);border:1px solid rgba(26,175,84,.25);}
+  .chip-won .num{color:var(--won);}
+  .chip-open{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);}
+  .chip-open .num{color:var(--open);}
+  .chip-lost{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);}
+  .chip-lost .num{color:var(--lost);}
+  .chip-abandoned{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);}
+  .chip-abandoned .num{color:var(--abandoned);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);padding:6px 10px;border-bottom:1px solid var(--border);}
+  td{padding:8px 10px;border-bottom:1px solid rgba(45,49,72,.5);vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,.02);}
+  .tag{display:inline-block;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:600;margin:1px;}
+  .tag-fb{background:rgba(24,119,242,.15);color:var(--meta);}
+  .tag-google{background:rgba(234,67,53,.15);color:var(--google);}
+  .tag-organic{background:rgba(15,157,88,.15);color:var(--organic);}
+  .tag-direct{background:rgba(148,163,184,.12);color:#94a3b8;}
+  .tag-open{background:rgba(59,130,246,.12);color:var(--open);}
+  .tag-lost{background:rgba(239,68,68,.12);color:var(--lost);}
+  .tag-abandoned{background:rgba(245,158,11,.12);color:var(--abandoned);}
+  .tag-won{background:rgba(26,175,84,.15);color:var(--won);}
+  .tag-eddm{background:rgba(245,158,11,.12);color:var(--eddm);}
+  .tag-email{background:rgba(167,139,250,.12);color:var(--email);}
+
+  .chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
+  .chart-title{font-size:13px;font-weight:700;margin-bottom:16px;}
+
+  .roas-block{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+  .roas-title{font-size:13px;font-weight:700;margin-bottom:14px;color:var(--text);display:flex;align-items:center;gap:8px;}
+  .roas-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(45,49,72,.4);font-size:13px;}
+  .roas-row:last-child{border-bottom:none;}
+  .roas-label{color:var(--muted);}
+  .roas-val{font-weight:700;font-size:16px;}
+
+  .won-deal-card{background:var(--card);border:1px solid rgba(26,175,84,.3);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
+  .won-deal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--won),#34d399);}
+  .won-deal-name{font-size:16px;font-weight:800;margin-bottom:4px;}
+  .won-deal-company{color:var(--muted);font-size:12px;margin-bottom:12px;}
+  .won-deal-details{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .won-detail{font-size:12px;}
+  .won-detail-label{color:var(--muted);margin-bottom:2px;}
+  .won-detail-val{font-weight:600;}
+
+  .source-bar{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:12px;}
+  .source-bar-fill{height:6px;border-radius:3px;}
+  .source-bar-label{min-width:95px;color:var(--muted);}
+  .source-bar-pct{min-width:38px;text-align:right;font-weight:600;}
+
+  .insight-item{padding:10px 14px;border-left:3px solid;border-radius:0 8px 8px 0;background:rgba(255,255,255,.03);margin-bottom:8px;font-size:13px;line-height:1.5;}
+  .insight-meta{border-left-color:var(--meta);}
+  .insight-google{border-left-color:var(--google);}
+  .insight-ghl{border-left-color:var(--ghl);}
+  .insight-ga4{border-left-color:var(--ga4);}
+  .insight-warn{border-left-color:var(--eddm);}
+  .insight-organic{border-left-color:var(--organic);}
+  .insight-email{border-left-color:var(--email);}
+
+  .footer{padding:16px 28px;border-top:1px solid var(--border);color:var(--muted);font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Iconic Workspaces · <span>Cross-Channel Report</span></h1>
+    <p>Performance digest · Jun 1–25, 2026 (MTD) · Generated Jun 25, 2026</p>
+  </div>
+  <div class="badges">
+    <span class="badge badge-meta">Meta Ads</span>
+    <span class="badge badge-google">Google Ads</span>
+    <span class="badge badge-eddm">EDDM</span>
+    <span class="badge badge-email">Email Mktg</span>
+    <span class="badge badge-ga4">GA4</span>
+    <span class="badge badge-ghl">GHL CRM</span>
+    <span class="badge badge-period">Jun 1–25, 2026</span>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ── KPI OVERVIEW ── -->
+<div class="section-title">📊 KPI Overview · Jun 1–25, 2026</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:8px;">
+
+  <!-- 1. Total Ad Spend -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--meta),var(--google));"></div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Total Ad Spend</div>
+    <div style="font-size:38px;font-weight:900;letter-spacing:-1px;color:#60a5fa;line-height:1;">$2,023</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;">Ads + Agency Fee</div>
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+      <div style="background:rgba(24,119,242,.1);border:1px solid rgba(24,119,242,.25);border-radius:8px;padding:6px 10px;flex:1;min-width:70px;">
+        <div style="font-size:10px;color:var(--meta);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Meta</div>
+        <div style="font-size:16px;font-weight:800;color:var(--text);">$877</div>
+      </div>
+      <div style="background:rgba(234,67,53,.1);border:1px solid rgba(234,67,53,.25);border-radius:8px;padding:6px 10px;flex:1;min-width:70px;">
+        <div style="font-size:10px;color:var(--google);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Google</div>
+        <div style="font-size:16px;font-weight:800;color:var(--text);">$1,146</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Total Paid Leads + Avance -->
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#a78bfa,#60a5fa);"></div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Total Paid Leads</div>
+    <div style="font-size:38px;font-weight:900;letter-spacing:-1px;color:var(--text);line-height:1;">41</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;">Meta 34 · Google 7</div>
+    <div style="margin-top:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <span style="font-size:11px;color:var(--muted);">Leads con avance</span>
+        <span style="font-size:13px;font-weight:800;color:#a78bfa;">Ver pipeline ↓</span>
+      </div>
+      <div style="background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden;">
+        <div style="background:linear-gradient(90deg,#a78bfa,#60a5fa);height:100%;width:60%;border-radius:4px;"></div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px;">Leads sin "Not Interested" ni "Unresponsive"</div>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;">
+      <div style="background:rgba(24,119,242,.1);border:1px solid rgba(24,119,242,.2);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--meta);font-weight:700;">Meta CPL $19.69</div>
+      <div style="background:rgba(234,67,53,.1);border:1px solid rgba(234,67,53,.2);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--google);font-weight:700;">Google $163.73/conv</div>
+    </div>
+  </div>
+
+  <!-- 3. Total Revenue -->
+  <div style="background:var(--card);border:1px solid rgba(26,175,84,.3);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--won),#34d399);"></div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Revenue Confirmado</div>
+    <div style="font-size:38px;font-weight:900;letter-spacing:-1px;color:var(--won);line-height:1;">$17,496<span style="font-size:20px;">+</span></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;">5 clientes ganados · Jun MTD</div>
+    <div style="margin-top:14px;display:grid;gap:5px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Rohan Stephenson (EDDM)</span><strong style="color:var(--eddm);">$15,600</strong></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Riadh Zine (VO Avt)</span><strong style="color:var(--won);">$948</strong></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Yunier Dominguez (VO Avt)</span><strong style="color:var(--won);">$948</strong></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--muted);">Moneyede + Lina</span><strong style="color:var(--muted);">TBD</strong></div>
+    </div>
+  </div>
+
+  <!-- 4. ROAS -->
+  <div style="background:var(--card);border:1px solid rgba(245,158,11,.3);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#f59e0b,#fbbf24);"></div>
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Blended ROAS</div>
+    <div style="font-size:38px;font-weight:900;letter-spacing:-1px;color:#f59e0b;line-height:1;">3.30<span style="font-size:22px;">×</span></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;">Cada $1 invertido → $3.30 back · $5,299 total</div>
+    <div style="margin-top:14px;display:grid;gap:6px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;border-bottom:1px solid rgba(45,49,72,.5);">
+        <span style="color:var(--eddm);font-weight:600;">EDDM</span>
+        <span style="color:var(--muted);font-size:11px;">$15,600 / $3,276</span>
+        <strong style="color:var(--eddm);">4.76×</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;border-bottom:1px solid rgba(45,49,72,.5);">
+        <span style="color:var(--meta);font-weight:600;">Meta</span>
+        <span style="color:var(--muted);font-size:11px;">34 leads · pipeline</span>
+        <strong style="color:var(--muted);">0× direct*</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:5px 0;">
+        <span style="color:var(--google);font-weight:600;">Google</span>
+        <span style="color:var(--muted);font-size:11px;">7 conv · pipeline</span>
+        <strong style="color:var(--muted);">0× direct*</strong>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px;">*Revenue cierra offline · UTMs activos desde hoy</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── NEW MEMBERS / WON DEALS ── -->
+<div class="section-title">🏆 New Members · Jun 25, 2026</div>
+<div class="alert alert-success">
+  <strong>2 new OfficeRnD purchases today.</strong> Both came through the website organically — no tracked paid ad attribution. Confirms that organic/direct traffic is converting to paying customers without digital ad assist.
+</div>
+<div class="grid-2">
+  <div class="won-deal-card">
+    <div class="won-deal-name">Moneyede M. Martin</div>
+    <div class="won-deal-company">Law Offices of Moneyede Martin, P.A.</div>
+    <div class="won-deal-details">
+      <div class="won-detail"><div class="won-detail-label">Plan</div><div class="won-detail-val">Virtual Office Connect · Downtown</div></div>
+      <div class="won-detail"><div class="won-detail-label">Term</div><div class="won-detail-val">12 Month</div></div>
+      <div class="won-detail"><div class="won-detail-label">Location</div><div class="won-detail-val">Downtown Miami</div></div>
+      <div class="won-detail"><div class="won-detail-label">Attribution</div><div class="won-detail-val"><span class="tag tag-organic">Organic / Direct</span></div></div>
+      <div class="won-detail"><div class="won-detail-label">GHL Source</div><div class="won-detail-val" style="color:var(--muted)">CRM Workflow (OfficeRnD direct)</div></div>
+      <div class="won-detail"><div class="won-detail-label">Date</div><div class="won-detail-val">Jun 25, 2026</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);">Purchased directly via OfficeRnD. No UTM parameters — no paid ad channel attribution. Likely found via organic Google search or direct referral.</div>
+  </div>
+  <div class="won-deal-card">
+    <div class="won-deal-name">Lina Sokol</div>
+    <div class="won-deal-company">Lina Sokol (Individual)</div>
+    <div class="won-deal-details">
+      <div class="won-detail"><div class="won-detail-label">Plan</div><div class="won-detail-val">Day Pass</div></div>
+      <div class="won-detail"><div class="won-detail-label">Term</div><div class="won-detail-val">Single Day</div></div>
+      <div class="won-detail"><div class="won-detail-label">Location</div><div class="won-detail-val">TBD (from OfficeRnD)</div></div>
+      <div class="won-detail"><div class="won-detail-label">Attribution</div><div class="won-detail-val"><span class="tag tag-organic">Organic / Direct</span></div></div>
+      <div class="won-detail"><div class="won-detail-label">GHL Source</div><div class="won-detail-val" style="color:var(--muted)">Not in GHL (OfficeRnD direct)</div></div>
+      <div class="won-detail"><div class="won-detail-label">Date</div><div class="won-detail-val">Jun 25, 2026</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);">OfficeRnD direct purchase. No GHL contact found — no digital ad attribution available. Organic/direct channel.</div>
+  </div>
+</div>
+
+<!-- ── ROAS SUMMARY ── -->
+<div class="section-title">💰 ROAS Summary</div>
+<div class="grid-4">
+  <div class="roas-block">
+    <div class="roas-title">📱 Meta Ads ROAS</div>
+    <div class="roas-row"><span class="roas-label">Spend</span><span class="roas-val" style="color:var(--meta)">$876.87</span></div>
+    <div class="roas-row"><span class="roas-label">Form Leads</span><span class="roas-val">34</span></div>
+    <div class="roas-row"><span class="roas-label">CPL</span><span class="roas-val">$19.69</span></div>
+    <div class="roas-row"><span class="roas-label">Won from Meta</span><span class="roas-val" style="color:var(--muted)">0 confirmed</span></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.5;">34 form leads in pipeline. Revenue tracks offline — deals not yet closed from Meta leads this month.</div>
+  </div>
+  <div class="roas-block">
+    <div class="roas-title">🔍 Google Ads ROAS</div>
+    <div class="roas-row"><span class="roas-label">Spend</span><span class="roas-val" style="color:var(--google)">$1,146.13</span></div>
+    <div class="roas-row"><span class="roas-label">Conversions</span><span class="roas-val">7</span></div>
+    <div class="roas-row"><span class="roas-label">Cost/Conv.</span><span class="roas-val">$163.73</span></div>
+    <div class="roas-row"><span class="roas-label">Won from Google</span><span class="roas-val" style="color:var(--muted)">0 confirmed</span></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.5;">7 call/form conversions in pipeline. New members (Jun 25) came organically, not via tracked Google click.</div>
+  </div>
+  <div class="roas-block" style="border-color:rgba(245,158,11,.3)">
+    <div class="roas-title">📬 EDDM ROAS</div>
+    <div class="roas-row"><span class="roas-label">Spend Aventura</span><span class="roas-val" style="color:var(--eddm)">$1,660.94</span></div>
+    <div class="roas-row"><span class="roas-label">Spend Downtown</span><span class="roas-val" style="color:var(--eddm)">$1,615.49</span></div>
+    <div class="roas-row"><span class="roas-label">Total EDDM Spend</span><span class="roas-val" style="color:var(--eddm)">$3,276.43</span></div>
+    <div class="roas-row"><span class="roas-label">Revenue</span><span class="roas-val" style="color:var(--won)">$15,600</span></div>
+    <div class="roas-row"><span class="roas-label">EDDM ROAS</span><span class="roas-val" style="color:var(--won);font-size:20px;">4.76×</span></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.5;">Todo el revenue EDDM viene de Aventura (Rohan Stephenson). Downtown aún sin conversiones confirmadas — puede necesitar más tiempo o seguimiento activo.</div>
+  </div>
+  <div class="roas-block" style="border-color:rgba(96,165,250,.3)">
+    <div class="roas-title">📊 Total / Blended ROAS</div>
+    <div class="roas-row"><span class="roas-label">Revenue Confirmado</span><span class="roas-val" style="color:var(--won)">$17,496+</span></div>
+    <div class="roas-row"><span class="roas-label">↳ Rohan Stephenson (EDDM)</span><span class="roas-val" style="color:var(--eddm)">$15,600</span></div>
+    <div class="roas-row"><span class="roas-label">↳ Riadh Zine (Organic · Avt)</span><span class="roas-val" style="color:var(--won)">$948</span></div>
+    <div class="roas-row"><span class="roas-label">↳ Yunier Dominguez (Organic · Avt)</span><span class="roas-val" style="color:var(--won)">$948</span></div>
+    <div class="roas-row"><span class="roas-label">↳ Moneyede + Lina (Organic)</span><span class="roas-val" style="color:var(--muted)">TBD</span></div>
+    <div class="roas-row"><span class="roas-label">Digital Spend (Meta + Google)</span><span class="roas-val" style="color:#60a5fa">$2,023</span></div>
+    <div class="roas-row"><span class="roas-label">EDDM Spend</span><span class="roas-val" style="color:var(--eddm)">$3,276.43</span></div>
+    <div class="roas-row"><span class="roas-label">Total Investment</span><span class="roas-val" style="color:var(--text)">$5,299.43</span></div>
+    <div class="roas-row"><span class="roas-label">Blended ROAS (all channels)</span><span class="roas-val" style="color:#60a5fa;font-size:20px;">3.30×</span></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.5;">$17,496 / $5,299.43 = <strong style="color:#60a5fa">3.30×</strong>. Cada $1 invertido (digital + EDDM) genera $3.30 en revenue confirmado. Sin contar aún a Moneyede y Lina.</div>
+  </div>
+</div>
+
+<!-- ── ATTRIBUTION ALERTS ── -->
+<div class="section-title">⚠️ Attribution Alerts</div>
+<div class="alert alert-success">
+  <strong>2 organic conversions (Jun 25):</strong> Moneyede M. Martin (Virtual Office Connect DTW 12M) and Lina Sokol (Day Pass) both purchased directly via OfficeRnD with no paid ad UTMs. Organic/direct channel is converting.
+</div>
+<div class="alert alert-warn">
+  <strong>Meta Click–to–Session Gap (27%):</strong> Meta API reports 727 clicks but GA4 shows only 500 Paid Social sessions — 227-session gap. Likely missing UTM tags on some creatives or cross-device differences.
+</div>
+<div class="alert alert-info">
+  <strong>Google Ads Attribution Window:</strong> Windsor reports 7 conversions but GA4 Paid Search shows 157 sessions with $0 tracked revenue. Normal for offline sales — conversions close by phone after click.
+</div>
+<div class="alert alert-warn">
+  <strong>⚠️ "schedule" Event Anomaly:</strong> GA4 shows 1,400 "schedule" events across 363 sessions — avg 3.9 per session is too high. Likely duplicate GTM trigger. Verify before using for optimization.
+</div>
+
+<!-- ── PAID MEDIA ── -->
+<div class="section-title">💸 Paid Media Performance · Jun 1–25</div>
+<div class="grid-3">
+  <div class="card">
+    <div class="card-header"><span class="card-label">Meta Ads · Active Campaigns</span><span class="card-channel ch-meta">META</span></div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Account 388480804021264</div>
+      <div class="kpi-value" style="color:var(--meta);font-size:22px">$876.87 <span style="font-size:14px;font-weight:400;color:var(--muted)">spent</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+      <div style="text-align:center"><div style="font-size:18px;font-weight:800">35,425</div><div style="font-size:10px;color:var(--muted)">Impressions</div></div>
+      <div style="text-align:center"><div style="font-size:18px;font-weight:800">727</div><div style="font-size:10px;color:var(--muted)">Clicks</div></div>
+      <div style="text-align:center"><div style="font-size:18px;font-weight:800;color:var(--ghl)">34</div><div style="font-size:10px;color:var(--muted)">Form Leads</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <div style="text-align:center"><div style="font-size:16px;font-weight:700">2.05%</div><div style="font-size:10px;color:var(--muted)">CTR</div></div>
+      <div style="text-align:center"><div style="font-size:16px;font-weight:700">$1.21</div><div style="font-size:10px;color:var(--muted)">CPC</div></div>
+      <div style="text-align:center"><div style="font-size:16px;font-weight:700">$19.69</div><div style="font-size:10px;color:var(--muted)">CPL</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-label">Google Ads · Search</span><span class="card-channel ch-google">GOOGLE</span></div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Account 197-160-1762</div>
+      <div class="kpi-value" style="color:var(--google);font-size:22px">$1,146.13 <span style="font-size:14px;font-weight:400;color:var(--muted)">spent</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+      <div style="text-align:center"><div style="font-size:18px;font-weight:800">4,389</div><div style="font-size:10px;color:var(--muted)">Impressions</div></div>
+      <div style="text-align:center"><div style="font-size:18px;font-weight:800">176</div><div style="font-size:10px;color:var(--muted)">Clicks</div></div>
+      <div style="text-align:center"><div style="font-size:18px;font-weight:800;color:var(--ghl)">7</div><div style="font-size:10px;color:var(--muted)">Conv.</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <div style="text-align:center"><div style="font-size:16px;font-weight:700">4.01%</div><div style="font-size:10px;color:var(--muted)">CTR</div></div>
+      <div style="text-align:center"><div style="font-size:16px;font-weight:700">$6.51</div><div style="font-size:10px;color:var(--muted)">CPC</div></div>
+      <div style="text-align:center"><div style="font-size:16px;font-weight:700">$163.73</div><div style="font-size:10px;color:var(--muted)">Cost/Conv</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-label">Organic · GA4</span><span class="card-channel ch-organic">ORGANIC</span></div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">No paid spend · GA4 data</div>
+      <div class="kpi-value" style="color:var(--organic);font-size:22px">349 <span style="font-size:14px;font-weight:400;color:var(--muted)">sessions</span></div>
+    </div>
+    <div style="margin-bottom:8px">
+      <div class="source-bar"><span class="source-bar-label">Organic Search</span><div class="source-bar-fill" style="width:86%;background:var(--organic)"></div><span class="source-bar-pct">206</span></div>
+      <div class="source-bar"><span class="source-bar-label">Organic Social</span><div class="source-bar-fill" style="width:60%;background:#a78bfa"></div><span class="source-bar-pct">143</span></div>
+    </div>
+    <div style="margin-top:10px;padding:8px 10px;background:rgba(26,175,84,.08);border:1px solid rgba(26,175,84,.2);border-radius:8px;font-size:11px;color:#6ee7b7;">
+      ✅ <strong>Both Jun 25 conversions attributed here</strong> — Organic/Direct channel converting to paying members.
+    </div>
+  </div>
+</div>
+
+<!-- ── EDDM + EMAIL ── -->
+<div class="section-title">📬 EDDM · Email Marketing · Jun 2026</div>
+<div class="grid-2">
+  <!-- EDDM -->
+  <div class="card" style="border-color:rgba(245,158,11,.3)">
+    <div class="card-header"><span class="card-label">EDDM · Every Door Direct Mail</span><span class="card-channel ch-eddm">EDDM</span></div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Offline channel · Jun 2026 · 2 zonas</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+        <div style="padding:10px;background:rgba(26,175,84,.08);border:1px solid rgba(26,175,84,.25);border-radius:8px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:var(--won)">$15,600</div>
+          <div style="font-size:10px;color:var(--muted)">Revenue confirmado</div>
+        </div>
+        <div style="padding:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:8px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:var(--eddm)">$3,276</div>
+          <div style="font-size:10px;color:var(--muted)">Total cost</div>
+        </div>
+        <div style="padding:10px;background:rgba(26,175,84,.08);border:1px solid rgba(26,175,84,.35);border-radius:8px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:var(--won)">4.76×</div>
+          <div style="font-size:10px;color:var(--muted)">EDDM ROAS</div>
+        </div>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>Zona</th><th>Cost</th><th>Won</th><th>Revenue</th><th>ROAS</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Aventura</strong></td>
+          <td style="color:var(--eddm)">$1,660.94</td>
+          <td><span class="tag tag-won">Rohan Stephenson</span></td>
+          <td style="color:var(--won);font-weight:700">$15,600</td>
+          <td style="color:var(--won);font-weight:800">9.39×</td>
+        </tr>
+        <tr>
+          <td><strong>Downtown</strong></td>
+          <td style="color:var(--eddm)">$1,615.49</td>
+          <td style="color:var(--muted)">0 confirmed</td>
+          <td style="color:var(--muted)">$0</td>
+          <td style="color:var(--muted)">0×</td>
+        </tr>
+        <tr style="background:rgba(245,158,11,.04);font-weight:700;border-top:2px solid rgba(245,158,11,.2);">
+          <td style="color:var(--eddm)">Total EDDM</td>
+          <td style="color:var(--eddm)">$3,276.43</td>
+          <td>1 deal</td>
+          <td style="color:var(--won)">$15,600</td>
+          <td style="color:var(--won);font-size:15px;">4.76×</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.5;">Tip: agregar landing page exclusiva (ej. /eddm-downtown) o número de teléfono diferenciado para medir response rate de Downtown por separado.</div>
+  </div>
+
+  <!-- EMAIL MARKETING -->
+  <div class="card">
+    <div class="card-header"><span class="card-label">Email Marketing · Summer Promo 2026</span><span class="card-channel ch-email">EMAIL</span></div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:6px">EBLASTS FOR LEADS · Jun 13 + Jun 15, 2026</div>
+      <div style="display:flex;gap:16px;align-items:baseline;">
+        <div class="kpi-value" style="color:var(--email);font-size:28px">8,616 <span style="font-size:14px;font-weight:400;color:var(--muted)">delivered</span></div>
+      </div>
+    </div>
+    <!-- Combined KPI chips -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+      <div style="text-align:center;padding:8px;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:8px">
+        <div style="font-size:18px;font-weight:800;color:var(--email)">285</div><div style="font-size:10px;color:var(--muted)">Opens</div>
+      </div>
+      <div style="text-align:center;padding:8px;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:8px">
+        <div style="font-size:18px;font-weight:800;color:var(--email)">3.31%</div><div style="font-size:10px;color:var(--muted)">Open Rate</div>
+      </div>
+      <div style="text-align:center;padding:8px;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:8px">
+        <div style="font-size:18px;font-weight:800;color:var(--email)">14</div><div style="font-size:10px;color:var(--muted)">Clicks</div>
+      </div>
+      <div style="text-align:center;padding:8px;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);border-radius:8px">
+        <div style="font-size:18px;font-weight:800;color:var(--email)">0.16%</div><div style="font-size:10px;color:var(--muted)">CTR</div>
+      </div>
+    </div>
+    <!-- Per-send breakdown -->
+    <div style="font-size:12px;font-weight:700;color:var(--email);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.6px">Detalle por envío</div>
+    <table>
+      <thead><tr><th>Envío</th><th>Fecha</th><th>Delivered</th><th>Opens</th><th>OR</th><th>Clicks</th><th>CTR</th><th>Unsub</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Send #1</strong><br><span style="font-size:10px;color:var(--muted)">Clone</span></td>
+          <td style="color:var(--muted)">Jun 13</td>
+          <td><strong>4,406</strong></td>
+          <td style="color:var(--email)"><strong>200</strong></td>
+          <td style="color:var(--email)"><strong>4.54%</strong></td>
+          <td style="color:var(--email)"><strong>13</strong></td>
+          <td>0.30%</td>
+          <td style="color:var(--muted)">2</td>
+        </tr>
+        <tr>
+          <td><strong>Send #2</strong><br><span style="font-size:10px;color:var(--muted)">Resend-Unopened</span></td>
+          <td style="color:var(--muted)">Jun 15</td>
+          <td><strong>4,210</strong></td>
+          <td style="color:var(--email)"><strong>85</strong></td>
+          <td style="color:var(--email)"><strong>2.02%</strong></td>
+          <td style="color:var(--email)"><strong>1</strong></td>
+          <td>0.02%</td>
+          <td style="color:var(--muted)">3</td>
+        </tr>
+        <tr style="background:rgba(167,139,250,.05);font-weight:700;border-top:2px solid rgba(167,139,250,.2);">
+          <td colspan="2" style="color:var(--email);">Total / Comb.</td>
+          <td>8,616</td>
+          <td style="color:var(--email);">285</td>
+          <td style="color:var(--email);">3.31%</td>
+          <td style="color:var(--email);">14</td>
+          <td style="color:var(--email);">0.16%</td>
+          <td style="color:var(--muted);">5</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="padding:8px 10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:8px;font-size:11px;color:#fca5a5;line-height:1.5;">
+        <strong>Hard Bounced:</strong> 97 (Send #1) + 6 (Send #2) = <strong>103 total</strong> — limpiar lista antes del próximo envío.
+      </div>
+      <div style="padding:8px 10px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:8px;font-size:11px;color:#fbbf24;line-height:1.5;">
+        <strong>Skipped:</strong> 3,737 en Send #1 — revisar filtros de segmentación en GHL.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── GA4 SESSIONS ── -->
+<div class="section-title">🌐 GA4 Sessions by Channel · Jun 1–25</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span class="card-label">Sessions by Channel</span><span class="card-channel ch-ga4">GA4</span></div>
+    <table>
+      <thead><tr><th>Channel</th><th>Sessions</th><th>New Users</th><th>Bounce</th><th>Avg Duration</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Direct</strong></td><td>754</td><td>827</td><td>51.3%</td><td>4m 13s</td></tr>
+        <tr><td><strong style="color:var(--meta)">Paid Social</strong></td><td>500</td><td>1,302</td><td>70.4%</td><td>1m 16s</td></tr>
+        <tr><td><strong style="color:var(--organic)">Organic Search</strong></td><td>206</td><td>226</td><td>27.2%</td><td>5m 51s</td></tr>
+        <tr><td><span style="color:var(--muted)">Unassigned</span></td><td>163</td><td>6</td><td>97.5%</td><td>3m 10s</td></tr>
+        <tr><td><strong style="color:var(--google)">Paid Search</strong></td><td>157</td><td>449</td><td>29.9%</td><td>10m 22s</td></tr>
+        <tr><td><span style="color:var(--organic)">Organic Social</span></td><td>143</td><td>311</td><td>67.8%</td><td>0m 19s</td></tr>
+        <tr><td><strong style="color:var(--email)">Email</strong></td><td>106</td><td>82</td><td>51.9%</td><td>1m 26s</td></tr>
+        <tr><td>Referral</td><td>67</td><td>15</td><td>25.4%</td><td>18m 46s</td></tr>
+        <tr><td>AI Assistant</td><td>33</td><td>53</td><td>30.3%</td><td>7m 06s</td></tr>
+        <tr><td>Cross-network</td><td>11</td><td>23</td><td>63.6%</td><td>7m 24s</td></tr>
+        <tr style="font-weight:700;background:rgba(255,255,255,.03)"><td>Total</td><td>2,140</td><td>3,294</td><td>–</td><td>–</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-label">Key GA4 Events</span><span class="card-channel ch-ga4">GA4</span></div>
+    <table>
+      <thead><tr><th>Event</th><th>Count</th><th>Sessions</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>page_view</td><td>8,184</td><td>1,925</td><td></td></tr>
+        <tr><td>session_start</td><td>4,020</td><td>1,971</td><td></td></tr>
+        <tr><td>first_visit</td><td>3,294</td><td>1,532</td><td></td></tr>
+        <tr><td>scroll</td><td>2,629</td><td>666</td><td></td></tr>
+        <tr><td>user_engagement</td><td>2,098</td><td>703</td><td></td></tr>
+        <tr><td><span style="color:var(--eddm)">schedule ⚠️</span></td><td>1,400</td><td>363</td><td style="color:var(--eddm);font-size:11px">Verify tracking</td></tr>
+        <tr><td>form_start</td><td>304</td><td>152</td><td></td></tr>
+        <tr><td>contact</td><td>6</td><td>5</td><td></td></tr>
+        <tr><td><strong style="color:var(--ghl)">ghl_calendar_downtown</strong></td><td>3</td><td>3</td><td style="color:var(--ghl);font-size:11px">✓ Conversion</td></tr>
+        <tr><td><strong style="color:var(--ghl)">virtual_form_submit</strong></td><td>4</td><td>4</td><td style="color:var(--ghl);font-size:11px">✓ Conversion</td></tr>
+        <tr><td><strong style="color:var(--ghl)">officernd_book</strong></td><td>8</td><td>8</td><td style="color:var(--ghl);font-size:11px">✓ Conversion</td></tr>
+        <tr><td><strong style="color:var(--won)">officernd_signup</strong></td><td>2</td><td>2</td><td style="color:var(--won);font-size:11px">✓ New members</td></tr>
+        <tr><td>add_to_cart</td><td>1</td><td>1</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── CAMPAIGN BREAKDOWN ── -->
+<div class="section-title">📋 Campaign Breakdown · Jun 1–25</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span class="card-label">Meta Ads Campaigns</span><span class="card-channel ch-meta">META</span></div>
+    <table>
+      <thead><tr><th>Campaign</th><th>Status</th><th>Spend</th><th>Clicks</th><th>CPL/CPR</th><th>Results</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Tailored Leads 2025</strong><br><span style="font-size:10px;color:var(--muted)">OUTCOME_LEADS</span></td>
+          <td><span class="tag tag-open">Active</span></td>
+          <td>$669.56</td><td>398</td>
+          <td><strong style="color:var(--ghl)">$19.69</strong></td>
+          <td><strong style="color:var(--ghl)">34 leads</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Virtual Office Purchase</strong><br><span style="font-size:10px;color:var(--muted)">OUTCOME_SALES</span></td>
+          <td><span class="tag tag-open">Active</span></td>
+          <td>$185.13</td><td>322</td><td>—</td><td><span style="color:var(--muted)">Multi-attr</span></td>
+        </tr>
+        <tr>
+          <td><strong>REMARKETING Leads</strong></td>
+          <td><span class="tag tag-lost">Paused</span></td>
+          <td>$22.18</td><td>7</td><td>—</td><td>0 leads</td>
+        </tr>
+        <tr style="font-weight:700;background:rgba(255,255,255,.03)">
+          <td colspan="2">Total</td><td>$876.87</td><td>727</td><td>$19.69</td><td>34 leads</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-label">Google Ads Campaigns</span><span class="card-channel ch-google">GOOGLE</span></div>
+    <table>
+      <thead><tr><th>Campaign</th><th>Clicks</th><th>Impr.</th><th>Spend</th><th>CTR</th><th>Conv.</th><th>Cost/Conv.</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>[SP] Virtual Offices</strong><br><span style="font-size:10px;color:var(--muted)">Miami + Aventura</span></td>
+          <td>104</td><td>2,865</td><td>$621.58</td><td>3.63%</td>
+          <td><strong style="color:var(--ghl)">5</strong></td><td>$124.32</td>
+        </tr>
+        <tr>
+          <td><strong>[SP] Meeting Rooms</strong><br><span style="font-size:10px;color:var(--muted)">Downtown</span></td>
+          <td>72</td><td>1,524</td><td>$524.55</td><td>4.72%</td>
+          <td><strong style="color:var(--ghl)">2</strong></td><td>$262.28</td>
+        </tr>
+        <tr style="font-weight:700;background:rgba(255,255,255,.03)">
+          <td>Total</td><td>176</td><td>4,389</td><td>$1,146.13</td><td>4.01%</td><td>7</td><td>$163.73</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── GHL PIPELINES ── -->
+<div class="section-title">🏢 GHL CRM · Recent Pipeline Activity (Jun 18–25)</div>
+<div class="grid-2">
+  <div class="pipeline-card">
+    <div class="pipeline-title"><span class="pipeline-dot downtown"></span> Downtown Pipeline</div>
+    <div class="status-row">
+      <div class="status-chip chip-won"><span class="num">1</span><span class="lbl">New Member</span></div>
+      <div class="status-chip chip-open"><span class="num">14</span><span class="lbl">Open</span></div>
+      <div class="status-chip chip-lost"><span class="num">0</span><span class="lbl">Lost</span></div>
+    </div>
+    <table>
+      <thead><tr><th>Lead / Member</th><th>Date</th><th>Source</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(26,175,84,.05)"><td><strong>Moneyede M. Martin ✅</strong><br><span style="font-size:10px;color:var(--muted)">Law Offices · VO Connect 12M</span></td><td>Jun 25</td><td><span class="tag tag-organic">Organic</span></td><td><span class="tag tag-won">Member</span></td></tr>
+        <tr><td>Jean Paulo Albert Bosch</td><td>Jun 24</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-open">Open</span></td></tr>
+        <tr><td>Albert Mulles</td><td>Jun 18</td><td><span class="tag tag-google">Google Ads</span></td><td><span class="tag tag-open">Open</span></td></tr>
+        <tr><td>Google Ads Call</td><td>Jun 24</td><td><span class="tag tag-google">Google</span></td><td><span class="tag tag-open">Open</span></td></tr>
+        <tr><td>Luigi Uceta</td><td>Jun 23</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-open">Open</span></td></tr>
+        <tr><td>Kashif Sweet</td><td>Jun 23</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-open">Open</span></td></tr>
+        <tr><td>Elizabeth Mason</td><td>Jun 22</td><td><span class="tag tag-google">Google</span></td><td><span class="tag tag-open">Open</span></td></tr>
+        <tr><td>Jhoans</td><td>Jun 22</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-open">Open – Proposal</span></td></tr>
+        <tr><td>Lazar Marjanovic</td><td>Jun 21</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-open">Open</span></td></tr>
+        <tr><td>Salim Punjani</td><td>Jun 21</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-open">Open</span></td></tr>
+        <tr><td>Joe Flyn (Stream I)</td><td>Jun 21</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-open">Open</span></td></tr>
+        <tr><td>Dant Garcia</td><td>Jun 19</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-open">Open – Quoted</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pipeline-card">
+    <div class="pipeline-title"><span class="pipeline-dot aventura"></span> Aventura Pipeline + OfficeRnD</div>
+    <div class="status-row">
+      <div class="status-chip chip-won"><span class="num">3</span><span class="lbl">Won</span></div>
+      <div class="status-chip chip-open"><span class="num">3</span><span class="lbl">Open</span></div>
+      <div class="status-chip chip-lost"><span class="num">1</span><span class="lbl">Lost</span></div>
+      <div class="status-chip chip-abandoned"><span class="num">1</span><span class="lbl">Abnd.</span></div>
+    </div>
+    <table>
+      <thead><tr><th>Lead / Member</th><th>Date</th><th>Source</th><th>Status</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(26,175,84,.05)"><td><strong>Lina Sokol ✅</strong><br><span style="font-size:10px;color:var(--muted)">Day Pass</span></td><td>Jun 25</td><td><span class="tag tag-organic">Organic</span></td><td><span class="tag tag-won">Won</span></td><td style="color:var(--muted)">TBD</td></tr>
+        <tr style="background:rgba(26,175,84,.05)"><td><strong>Riadh Zine ✅</strong><br><span style="font-size:10px;color:var(--muted)">Flow AI · VO Connect Avt 12M</span></td><td>Jun 24</td><td><span class="tag tag-organic">Organic</span></td><td><span class="tag tag-won">Won</span></td><td style="color:var(--won);font-weight:700">$948</td></tr>
+        <tr style="background:rgba(26,175,84,.05)"><td><strong>Yunier Dominguez ✅</strong><br><span style="font-size:10px;color:var(--muted)">VO Connect Avt 12M</span></td><td>Jun 24</td><td><span class="tag tag-organic">Organic</span></td><td><span class="tag tag-won">Won</span></td><td style="color:var(--won);font-weight:700">$948</td></tr>
+        <tr><td>Nicolas Cantiano (Astucompra)</td><td>Jun 23</td><td><span class="tag tag-organic">Tour Cal</span></td><td><span class="tag tag-open">Open – Tour</span></td><td>—</td></tr>
+        <tr><td>Raul Perez Beltran</td><td>Jun 23</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-open">Open</span></td><td>—</td></tr>
+        <tr><td>Víctor Rodriguez C</td><td>Jun 21</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-open">Open</span></td><td>—</td></tr>
+        <tr><td>Daniel Tayeb</td><td>Jun 22</td><td><span class="tag tag-fb">Facebook</span></td><td><span class="tag tag-lost">Lost</span></td><td>—</td></tr>
+        <tr><td>Violeta</td><td>Jun 18</td><td><span class="tag tag-direct">Call AI</span></td><td><span class="tag tag-abandoned">Abandoned</span></td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);">⚠️ First page only (Jun 18–25). Full June count includes additional earlier entries.</div>
+  </div>
+</div>
+
+<!-- ── LEAD SOURCES ── -->
+<div class="section-title">🎯 Lead Sources & Conversion Summary</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header"><span class="card-label">Leads by Source (Visible Jun Activity)</span></div>
+    <div style="margin-top:8px">
+      <div class="source-bar"><span class="source-bar-label">Facebook Ads</span><div class="source-bar-fill" style="width:73%;background:var(--meta)"></div><span class="source-bar-pct">11</span></div>
+      <div class="source-bar"><span class="source-bar-label">Organic / Direct</span><div class="source-bar-fill" style="width:20%;background:var(--organic)"></div><span class="source-bar-pct">3</span></div>
+      <div class="source-bar"><span class="source-bar-label">Google Ads</span><div class="source-bar-fill" style="width:20%;background:var(--google)"></div><span class="source-bar-pct">3</span></div>
+      <div class="source-bar"><span class="source-bar-label">Call AI</span><div class="source-bar-fill" style="width:13%;background:#94a3b8)"></div><span class="source-bar-pct">2</span></div>
+      <div class="source-bar"><span class="source-bar-label">Inst. Offices</span><div class="source-bar-fill" style="width:7%;background:#a78bfa"></div><span class="source-bar-pct">1</span></div>
+      <div class="source-bar"><span class="source-bar-label">Tour Calendar</span><div class="source-bar-fill" style="width:7%;background:var(--organic)"></div><span class="source-bar-pct">1</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-label">Full Funnel Summary</span></div>
+    <div class="roas-row"><span class="roas-label">Meta Form Leads (MTD)</span><span class="roas-val" style="color:var(--meta)">34</span></div>
+    <div class="roas-row"><span class="roas-label">Google Call/Form Conv.</span><span class="roas-val" style="color:var(--google)">7</span></div>
+    <div class="roas-row"><span class="roas-label">Email Sessions (GA4)</span><span class="roas-val" style="color:var(--email)">106</span></div>
+    <div class="roas-row"><span class="roas-label">GA4 Real Conversions</span><span class="roas-val" style="color:var(--ga4)">17 events</span></div>
+    <div class="roas-row"><span class="roas-label">Won Deals (Jun MTD)</span><span class="roas-val" style="color:var(--won)">5 ✅</span></div>
+    <div class="roas-row"><span class="roas-label">Revenue Confirmado</span><span class="roas-val" style="color:var(--won)">$17,496+</span></div>
+    <div class="roas-row"><span class="roas-label">Active Open Leads</span><span class="roas-val" style="color:var(--open)">16+</span></div>
+    <div class="roas-row"><span class="roas-label">EDDM Won Deals</span><span class="roas-val" style="color:var(--won)">1 — Rohan Stephenson</span></div>
+  </div>
+</div>
+
+<!-- ── CHARTS ── -->
+<div class="section-title">📈 Charts</div>
+<div class="grid-3">
+  <div class="chart-wrap">
+    <div class="chart-title">Ad Spend by Channel</div>
+    <canvas id="spendChart" height="200"></canvas>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">GA4 Sessions by Channel</div>
+    <canvas id="sessionsDonut" height="200"></canvas>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">CPL / Cost per Conversion</div>
+    <canvas id="cplChart" height="200"></canvas>
+  </div>
+</div>
+<div class="grid-2" style="margin-top:12px">
+  <div class="chart-wrap">
+    <div class="chart-title">GA4 Sessions by Channel (Bar)</div>
+    <canvas id="sessionsBar" height="220"></canvas>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">Full Funnel · Clicks → Sessions → Leads → Members</div>
+    <canvas id="funnelChart" height="220"></canvas>
+  </div>
+</div>
+
+<!-- ── KEY INSIGHTS ── -->
+<div class="section-title">💡 Key Insights · Jun 1–25</div>
+<div class="insight-item insight-organic">
+  <strong>Organic/Direct is closing deals — paid is still building pipeline.</strong> Both new Jun 25 members (Moneyede Martin · Virtual Office Connect 12M, Lina Sokol · Day Pass) came through organic/direct with zero paid ad assist. This confirms the brand has organic search equity that converts without paid support.
+</div>
+<div class="insight-item insight-meta">
+  <strong>Meta Ads generating leads at $19.69/lead</strong> — 34 form leads from the Tailored campaign in 24 days. Strong volume. None of these leads have converted to members yet this month, but they remain active in the pipeline.
+</div>
+<div class="insight-item insight-google">
+  <strong>Google Ads showing strongest session quality</strong> — Paid Search delivers 10m 22s avg session at 29.9% bounce vs. Paid Social 1m 16s at 70.4%. Google's [SP] Virtual Offices campaign is more efficient ($124/conv vs $262/conv for Meeting Rooms).
+</div>
+<div class="insight-item insight-email">
+  <strong>Email: Summer Promo 2026 — 8,616 delivered · 3.31% OR · 0.16% CTR.</strong> 2 envíos (Jun 13 + resend Jun 15). Open rate bajo vs. benchmark B2B ~20% — sujeto a lista de calidad y segmentación. 103 hard bounces a depurar. 3,737 skips en Send #1 sugieren filtro de segmento mal configurado en GHL. Sin conversiones directas atribuidas.
+</div>
+<div class="insight-item insight-warn">
+  <strong>EDDM is generating revenue — Rohan Stephenson confirmed.</strong> EDDM produced at least 1 confirmed won deal (Rohan Stephenson) this period. Enter the campaign cost in the report to unlock ROAS. Additional conversions may be hidden as "Organic/Direct" — a unique landing page (e.g. /eddm-downtown) or phone number would isolate them.
+</div>
+<div class="insight-item insight-warn">
+  <strong>Meta click-to-session gap (27%) needs UTM audit.</strong> 727 Meta clicks but only 500 GA4 Paid Social sessions. Review all active ad creatives to confirm UTM parameters are set on every destination URL.
+</div>
+
+</div>
+
+<div class="footer">
+  <div>Iconic Workspaces · Cross-Channel Performance Report · Jun 1–25, 2026</div>
+  <div>Sources: Meta Ads API · Google Ads (Windsor AI) · GA4 (Smacient) · GHL CRM · OfficeRnD · Generated Jun 25, 2026</div>
+</div>
+
+<script>
+// 1. Spend Donut
+new Chart(document.getElementById('spendChart'),{type:'doughnut',data:{labels:['Meta Ads','Google Ads'],datasets:[{data:[876.87,1146.13],backgroundColor:['rgba(24,119,242,0.8)','rgba(234,67,53,0.8)'],borderColor:['#1877f2','#ea4335'],borderWidth:2}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#8892b0',font:{size:11}}},tooltip:{callbacks:{label:ctx=>` $${ctx.parsed.toFixed(2)}`}}},cutout:'60%'}});
+
+// 2. Sessions Donut
+new Chart(document.getElementById('sessionsDonut'),{type:'doughnut',data:{labels:['Direct','Paid Social','Organic Search','Paid Search','Organic Social','Email','Referral','Other'],datasets:[{data:[754,500,206,157,143,106,67,207],backgroundColor:['rgba(148,163,184,0.7)','rgba(24,119,242,0.7)','rgba(15,157,88,0.7)','rgba(234,67,53,0.7)','rgba(167,139,250,0.7)','rgba(167,139,250,0.5)','rgba(96,165,250,0.7)','rgba(100,116,139,0.5)'],borderWidth:1,borderColor:'#1a1d27'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#8892b0',font:{size:10},boxWidth:12}}},cutout:'55%'}});
+
+// 3. CPL Bar
+new Chart(document.getElementById('cplChart'),{type:'bar',data:{labels:['Meta (Form Lead)','Google (Virtual Off.)','Google (Meeting Rm)','Google (Avg)'],datasets:[{label:'Cost per Lead/Conv ($)',data:[19.69,124.32,262.28,163.73],backgroundColor:['rgba(24,119,242,0.7)','rgba(234,67,53,0.7)','rgba(234,67,53,0.4)','rgba(234,67,53,0.6)'],borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8892b0',font:{size:10}},grid:{color:'rgba(45,49,72,0.4)'}},y:{ticks:{color:'#8892b0',callback:v=>'$'+v},grid:{color:'rgba(45,49,72,0.4)'},beginAtZero:true}}}});
+
+// 4. Sessions Bar
+new Chart(document.getElementById('sessionsBar'),{type:'bar',data:{labels:['Direct','Paid Social','Organic Search','Unassigned','Paid Search','Organic Social','Email','Referral','AI Asst.'],datasets:[{label:'Sessions',data:[754,500,206,163,157,143,106,67,33],backgroundColor:['rgba(148,163,184,0.7)','rgba(24,119,242,0.7)','rgba(15,157,88,0.7)','rgba(100,116,139,0.5)','rgba(234,67,53,0.7)','rgba(167,139,250,0.7)','rgba(167,139,250,0.55)','rgba(96,165,250,0.7)','rgba(56,189,248,0.7)'],borderRadius:5}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8892b0',font:{size:10}},grid:{color:'rgba(45,49,72,0.4)'}},y:{ticks:{color:'#8892b0'},grid:{color:'rgba(45,49,72,0.4)'},beginAtZero:true}}}});
+
+// 5. Funnel
+new Chart(document.getElementById('funnelChart'),{type:'bar',data:{labels:['Meta Clicks','GA4 Paid Social','Meta Form Leads','Google Clicks','GA4 Paid Search','Google Conv.','New Members'],datasets:[{label:'Count',data:[727,500,34,176,157,7,2],backgroundColor:['rgba(24,119,242,0.8)','rgba(24,119,242,0.5)','rgba(24,119,242,0.3)','rgba(234,67,53,0.8)','rgba(234,67,53,0.5)','rgba(234,67,53,0.3)','rgba(26,175,84,0.85)'],borderRadius:5}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8892b0'},grid:{color:'rgba(45,49,72,0.4)'},beginAtZero:true},y:{ticks:{color:'#8892b0',font:{size:11}},grid:{color:'rgba(45,49,72,0.4)'}}}}});
+</script>
+</body>
+</html>
