@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iconic Workspaces · Paid Media Dashboard · Octubre 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f3f4f6;color:#111827;min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px}
+.header{background:#111827;border-radius:12px;padding:20px 26px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.header h1{color:#fff;font-size:18px;font-weight:700}
+.header p{color:#9ca3af;font-size:12px;margin-top:2px}
+.badge{background:#064e3b;border:1px solid #065f46;color:#6ee7b7;font-size:10.5px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap}
+.badge-warn{background:#7c2d12;border:1px solid #9a3412;color:#fed7aa;font-size:10.5px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap}
+.section-label{font-size:10.5px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.9px;margin-bottom:10px;margin-top:4px}
+.alert{background:#fefce8;border:1px solid #fde047;border-left:4px solid #f59e0b;border-radius:8px;padding:11px 16px;margin-bottom:18px;font-size:12.5px;color:#713f12;line-height:1.5}
+.alert strong{color:#92400e}
+.alert-blue{background:#eff6ff;border:1px solid #bfdbfe;border-left:4px solid #3b82f6;border-radius:8px;padding:11px 16px;margin-bottom:18px;font-size:12.5px;color:#1e3a5f;line-height:1.5}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:6px}
+@media(max-width:640px){.kpi-grid{grid-template-columns:1fr 1fr}}
+.kpi{background:#fff;border-radius:10px;padding:15px 18px;border:1px solid #e5e7eb;border-left:4px solid var(--accent)}
+.kpi-label{font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.kpi-value{font-size:24px;font-weight:800;color:var(--accent);line-height:1.1}
+.kpi-value.nd{font-size:18px;color:#9ca3af}
+.kpi-sub{font-size:11px;color:#9ca3af;margin-top:3px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:660px){.two-col{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:10px;border:1px solid #e5e7eb;padding:16px}
+.card h3{font-size:12.5px;font-weight:700;color:#374151;margin-bottom:12px}
+.chart-wrap{position:relative;width:100%;height:210px}
+.table-wrap{background:#fff;border-radius:10px;border:1px solid #e5e7eb;overflow:hidden;margin-bottom:20px}
+table{width:100%;border-collapse:collapse}
+thead th{padding:9px 14px;text-align:left;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid #e5e7eb}
+.thead-all{background:#f9fafb}
+.thead-all th{color:#6b7280}
+tbody tr{border-bottom:1px solid #f3f4f6}
+tbody tr:last-child{border-bottom:none}
+td{padding:9px 14px;font-size:12.5px;vertical-align:middle}
+.total-row td{background:#f9fafb;font-size:12.5px;padding:10px 14px}
+.total-row.gray td{background:#f1f5f9}
+.meta-c{color:#1877f2;font-weight:600}
+.goog-c{color:#ea4335;font-weight:600}
+.rev{text-align:right;font-weight:700;font-size:13px}
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
+.tag.goog{background:#fef2f2;color:#dc2626}
+.tag.meta{background:#eff6ff;color:#1d4ed8}
+.insight-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 16px;margin-bottom:10px;font-size:12px;color:#166534;line-height:1.5}
+.insight-box.warn{background:#fff7ed;border-color:#fed7aa;color:#92400e}
+.insight-box.info{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
+.footer{text-align:center;font-size:10.5px;color:#9ca3af;margin-top:24px;padding:14px 0;border-top:1px solid #e5e7eb}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>Iconic Workspaces · Paid Media Dashboard</h1>
+    <p>Octubre 2026 (Oct 1–29) &nbsp;·&nbsp; Meta Ads + Google Ads + GHL CRM &nbsp;·&nbsp; 9 deals ganados · $15,284 revenue</p>
+  </div>
+  <div class="badge-warn">Oct 1–29, 2026</div>
+</div>
+
+<div class="alert-blue" style="margin-bottom:18px">
+  <strong>✅ GHL CRM conectado:</strong> 9 deals ganados en Octubre · Revenue total <strong>$15,284.40</strong> · Blended ROAS <strong>6.30×</strong> sobre $2,424 invertidos. Aventura: 7 deals ($4,731) · Downtown: 2 deals ($10,553).
+</div>
+
+<!-- KPI ROW 1: PAID MEDIA SPEND -->
+<div class="section-label">Inversión Paid Media — Octubre 1–29, 2026</div>
+<div class="kpi-grid" style="margin-bottom:14px">
+  <div class="kpi" style="--accent:#1877f2">
+    <div class="kpi-label">Meta Ads — Gasto</div>
+    <div class="kpi-value">$1,274</div>
+    <div class="kpi-sub">Oct 1–29 · 52 leads · CPL $19.09 ↓ mejor que Sep</div>
+  </div>
+  <div class="kpi" style="--accent:#ea4335">
+    <div class="kpi-label">Google Ads — Gasto</div>
+    <div class="kpi-value">$1,150</div>
+    <div class="kpi-sub">Oct 1–29 · 210 clics · 3,630 impresiones · 4 conversiones</div>
+  </div>
+  <div class="kpi" style="--accent:#111827">
+    <div class="kpi-label">Total Invertido</div>
+    <div class="kpi-value">$2,424</div>
+    <div class="kpi-sub">Meta $1,274.44 + Google $1,149.85 · Oct 1–29</div>
+  </div>
+</div>
+
+<!-- KPI ROW 2: LEADS / CONVERSIONS -->
+<div class="section-label">Leads y Conversiones — Octubre 2026</div>
+<div class="kpi-grid" style="margin-bottom:20px">
+  <div class="kpi" style="--accent:#1877f2">
+    <div class="kpi-label">Meta — Leads (form)</div>
+    <div class="kpi-value">52</div>
+    <div class="kpi-sub">CPL $19.09 · Tailored Leads campaign · Oct 1–29</div>
+  </div>
+  <div class="kpi" style="--accent:#ea4335">
+    <div class="kpi-label">Google — Conversiones</div>
+    <div class="kpi-value">4</div>
+    <div class="kpi-sub">2 Virtual Offices · 2 Meeting Rooms · Oct 7, 15, 27, 28</div>
+  </div>
+  <div class="kpi" style="--accent:#16a34a">
+    <div class="kpi-label">Blended ROAS (Oct)</div>
+    <div class="kpi-value">6.30×</div>
+    <div class="kpi-sub">$15,284 won / $2,424 spent · 9 deals cerrados</div>
+  </div>
+</div>
+
+<!-- CHARTS -->
+<div class="section-label">Performance Visual — Octubre 2026</div>
+<div class="two-col" style="margin-bottom:20px">
+  <div class="card">
+    <h3>Gasto por Campaña · Meta + Google (Oct 1–29)</h3>
+    <div class="chart-wrap"><canvas id="spendChart"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Inversión Diaria — Google Ads (Oct 1–29)</h3>
+    <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
+  </div>
+</div>
+
+<!-- INSIGHTS -->
+<div class="section-label">Insights Destacados — Octubre 2026</div>
+<div class="insight-box" style="margin-bottom:10px">
+  <strong>✅ Meta CPL mejoró 40%:</strong> El costo por lead bajó de $31.68 (Sep) a $19.09 (Oct) — 52 leads en 29 días vs 33 en Sep. La campaña Tailored Leads está traccionando mejor.
+</div>
+<div class="insight-box warn" style="margin-bottom:10px">
+  <strong>⚠️ Meeting Rooms CPC muy alto:</strong> $8.51 CPC promedio en Oct vs $4.06 en Virtual Offices. 67 clics / $569.87 gasto. Costo desproporcionado para el volumen generado. Ver auditoría de campaña adjunta.
+</div>
+<div class="insight-box info" style="margin-bottom:20px">
+  <strong>📊 4 conversiones Google Ads + 2 deals Downtown Won:</strong> Oct 7 (VO conv.), Oct 15 (MR conv.), Oct 27 (MR conv.), Oct 28 (VO conv.). Downtown cerró Denily Acosta ($9,779 PO, Oct 1) y Xavier Papiol ($774 VO, Oct 29) — deals orgánicos que coinciden con período de campaña activa Google.
+</div>
+
+<!-- PAID MEDIA TABLE -->
+<div class="section-label">Paid Media Detalle por Campaña — Octubre 1–29, 2026</div>
+<div class="table-wrap" style="margin-bottom:20px">
+  <table>
+    <thead class="thead-all">
+      <tr>
+        <th>Campaña</th><th>Gasto</th><th>Clics</th><th>Impresiones / Leads</th><th>CPL / CPC</th><th>Conversiones</th><th>Nota</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="meta-c">Meta — Virtual Office Purchase (Paid Social)</td>
+        <td>$281.83</td>
+        <td>122</td>
+        <td>10,006 imp.</td>
+        <td style="color:#9ca3af">—</td>
+        <td style="color:#9ca3af">—</td>
+        <td style="font-size:11px;color:#6b7280">Sin form leads · tráfico a landing VO</td>
+      </tr>
+      <tr>
+        <td class="meta-c">Meta — Tailored Leads Campaign (Paid Social)</td>
+        <td>$992.61</td>
+        <td>500</td>
+        <td>22,004 imp. · <strong>52 leads</strong></td>
+        <td style="color:#1877f2;font-weight:700">$19.09 CPL</td>
+        <td style="color:#9ca3af">52 forms</td>
+        <td style="font-size:11px;color:#6b7280">Mejor CPL del año hasta oct</td>
+      </tr>
+      <tr class="total-row" style="background:#eff6ff!important">
+        <td><strong>TOTAL META ADS (act_388480804021264)</strong></td>
+        <td><strong>$1,274.44</strong></td><td>622</td><td>32,010 imp. · <strong>52 leads</strong></td>
+        <td style="color:#1877f2;font-weight:700">$19.09 CPL</td>
+        <td>52 leads</td>
+        <td style="font-size:11px;color:#16a34a">1 deal atribuido Meta → $948</td>
+      </tr>
+      <tr>
+        <td class="goog-c">Google Ads — [SP] Virtual Offices – Miami + Aventura</td>
+        <td>$579.99</td><td>143</td><td>2,111 imp.</td>
+        <td>$4.06 CPC</td>
+        <td style="color:#16a34a;font-weight:700">2 conv.</td>
+        <td style="font-size:11px;color:#6b7280">Oct 7 · Oct 28</td>
+      </tr>
+      <tr>
+        <td class="goog-c">Google Ads — [SP] Meeting Rooms – Downtown</td>
+        <td>$569.87</td><td>67</td><td>1,519 imp.</td>
+        <td style="color:#dc2626;font-weight:700">$8.51 CPC ⚠️</td>
+        <td style="color:#16a34a;font-weight:700">2 conv.</td>
+        <td style="font-size:11px;color:#6b7280">Oct 15 · Oct 27 · CPC alto</td>
+      </tr>
+      <tr class="total-row gray">
+        <td><strong>TOTAL GOOGLE ADS (Oct 1–29)</strong></td>
+        <td><strong>$1,149.85</strong></td><td>210</td><td>3,630 imp.</td>
+        <td>$5.48 CPC blend.</td>
+        <td style="color:#16a34a;font-weight:700"><strong>4 conv.</strong></td>
+        <td style="font-size:11px;color:#6b7280">4 conv. → 2 deals DT won</td>
+      </tr>
+      <tr class="total-row" style="background:#f0fdf4!important">
+        <td><strong>TOTAL PAID DIGITAL</strong></td>
+        <td><strong>$2,424.29</strong></td><td>832 clics</td><td>52 leads Meta · 4 conv. Google</td>
+        <td>—</td>
+        <td style="color:#16a34a;font-weight:700">9 deals</td>
+        <td style="color:#16a34a;font-weight:700">ROAS 6.30× · $15,284 won</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- GOOGLE ADS DAILY BREAKDOWN -->
+<div class="section-label">Google Ads — Desglose Diario por Campaña (Oct 1–29)</div>
+<div class="table-wrap" style="margin-bottom:20px">
+  <table>
+    <thead class="thead-all">
+      <tr>
+        <th>Fecha</th>
+        <th class="meta-c" style="color:#ea4335">Virtual Offices ($)</th>
+        <th class="goog-c" style="color:#dc2626">Meeting Rooms ($)</th>
+        <th>Total día</th>
+        <th>Conv.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Oct 1</td><td>$24.17</td><td>$24.24</td><td>$48.41</td><td></td></tr>
+      <tr><td>Oct 2</td><td>$18.89</td><td>$16.47</td><td>$35.36</td><td></td></tr>
+      <tr><td>Oct 3</td><td>$6.68</td><td>$0</td><td>$6.68</td><td></td></tr>
+      <tr><td>Oct 4</td><td>$3.66</td><td>$25.97</td><td>$29.63</td><td></td></tr>
+      <tr><td>Oct 5</td><td>$18.59</td><td>$38.99</td><td>$57.58</td><td></td></tr>
+      <tr><td>Oct 6</td><td>$39.81</td><td>$28.34</td><td>$68.15</td><td></td></tr>
+      <tr style="background:#fef9c3"><td><strong>Oct 7</strong></td><td><strong>$50.11</strong></td><td>$23.11</td><td><strong>$73.22</strong></td><td style="color:#16a34a;font-weight:700">1 VO ✓</td></tr>
+      <tr><td>Oct 8</td><td>$21.29</td><td>$17.19</td><td>$38.48</td><td></td></tr>
+      <tr><td>Oct 9</td><td>$15.00</td><td>$23.08</td><td>$38.08</td><td></td></tr>
+      <tr><td>Oct 10</td><td>$21.54</td><td>$20.34</td><td>$41.88</td><td></td></tr>
+      <tr><td>Oct 11</td><td>$28.46</td><td>$1.79</td><td>$30.25</td><td></td></tr>
+      <tr><td>Oct 12</td><td>$18.65</td><td>$24.65</td><td>$43.30</td><td></td></tr>
+      <tr><td>Oct 13</td><td>$20.79</td><td>$22.41</td><td>$43.20</td><td></td></tr>
+      <tr><td>Oct 14</td><td>$24.23</td><td>$18.14</td><td>$42.37</td><td></td></tr>
+      <tr style="background:#fef9c3"><td><strong>Oct 15</strong></td><td>$13.87</td><td><strong>$18.90</strong></td><td>$32.77</td><td style="color:#16a34a;font-weight:700">1 MR ✓</td></tr>
+      <tr><td>Oct 16</td><td>$11.60</td><td>$26.37</td><td>$37.97</td><td></td></tr>
+      <tr><td>Oct 17</td><td>$13.46</td><td>$0</td><td>$13.46</td><td></td></tr>
+      <tr><td>Oct 18</td><td>$25.34</td><td>$21.35</td><td>$46.69</td><td></td></tr>
+      <tr><td>Oct 19</td><td>$24.78</td><td>$35.49</td><td>$60.27</td><td></td></tr>
+      <tr><td>Oct 20</td><td>$29.64</td><td>$33.70</td><td>$63.34</td><td></td></tr>
+      <tr><td>Oct 21</td><td>$13.31</td><td>$13.10</td><td>$26.41</td><td></td></tr>
+      <tr><td>Oct 22</td><td>$19.64</td><td>$20.27</td><td>$39.91</td><td></td></tr>
+      <tr><td>Oct 23</td><td>$7.42</td><td>$17.47</td><td>$24.89</td><td></td></tr>
+      <tr><td>Oct 24</td><td>$0</td><td>$0.08</td><td>$0.08</td><td></td></tr>
+      <tr><td>Oct 25</td><td>$38.65</td><td>$0</td><td>$38.65</td><td></td></tr>
+      <tr><td>Oct 26</td><td>$20.86</td><td>$39.09</td><td>$59.95</td><td></td></tr>
+      <tr style="background:#fef9c3"><td><strong>Oct 27</strong></td><td>$21.22</td><td><strong>$28.03</strong></td><td>$49.25</td><td style="color:#16a34a;font-weight:700">1 MR ✓</td></tr>
+      <tr style="background:#fef9c3"><td><strong>Oct 28</strong></td><td><strong>$15.85</strong></td><td>$21.00</td><td>$36.85</td><td style="color:#16a34a;font-weight:700">1 VO ✓</td></tr>
+      <tr><td>Oct 29</td><td>$12.48</td><td>$10.30</td><td>$22.78</td><td></td></tr>
+      <tr class="total-row">
+        <td><strong>TOTAL</strong></td>
+        <td style="color:#ea4335;font-weight:800">$579.99</td>
+        <td style="color:#dc2626;font-weight:800">$569.87</td>
+        <td><strong>$1,149.85</strong></td>
+        <td style="color:#16a34a;font-weight:800">4 conv.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- FUNNEL KPIs -->
+<div class="section-label">Lead → Tour → Purchase — Funnel Octubre 2026</div>
+<div class="kpi-grid" style="margin-bottom:14px">
+  <div class="kpi" style="--accent:#1877f2">
+    <div class="kpi-label">Leads (Meta forms)</div>
+    <div class="kpi-value">52</div>
+    <div class="kpi-sub">Tailored Leads campaign · CPL $19.09</div>
+  </div>
+  <div class="kpi" style="--accent:#7c3aed">
+    <div class="kpi-label">Tours Calendarios</div>
+    <div class="kpi-value">14</div>
+    <div class="kpi-sub">Aventura: 8 · Downtown: 6 · Oct 1–29</div>
+  </div>
+  <div class="kpi" style="--accent:#16a34a">
+    <div class="kpi-label">Deals Cerrados (Won)</div>
+    <div class="kpi-value">9</div>
+    <div class="kpi-sub">Aventura: 7 · Downtown: 2 · $15,284 total</div>
+  </div>
+  <div class="kpi" style="--accent:#ea580c">
+    <div class="kpi-label">Revenue Won</div>
+    <div class="kpi-value">$15,284</div>
+    <div class="kpi-sub">ROAS 6.30× · $2,424 spend total</div>
+  </div>
+</div>
+
+<!-- FUNNEL RATES -->
+<div class="two-col" style="margin-bottom:20px">
+  <div class="card">
+    <h3>Tasas de Conversión — Funnel Oct 2026</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <tbody>
+        <tr style="border-bottom:1px solid #e5e7eb">
+          <td style="padding:9px 6px;color:#6b7280">Leads Meta → Tours calendarizados</td>
+          <td style="padding:9px 6px;text-align:right;font-weight:700;color:#7c3aed">~26.9%</td>
+          <td style="padding:9px 6px;font-size:11px;color:#9ca3af">14 tours / 52 leads</td>
+        </tr>
+        <tr style="border-bottom:1px solid #e5e7eb">
+          <td style="padding:9px 6px;color:#6b7280">Tours → Deals Won (atribuibles)</td>
+          <td style="padding:9px 6px;text-align:right;font-weight:700;color:#16a34a">7.1%+</td>
+          <td style="padding:9px 6px;font-size:11px;color:#9ca3af">1+ deal / 14 tours (Veronica Chijner)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #e5e7eb">
+          <td style="padding:9px 6px;color:#6b7280">Show rate Downtown (Oct)</td>
+          <td style="padding:9px 6px;text-align:right;font-weight:700;color:#dc2626">33%</td>
+          <td style="padding:9px 6px;font-size:11px;color:#9ca3af">2 showed / 3 no-shows + 1 pendiente</td>
+        </tr>
+        <tr>
+          <td style="padding:9px 6px;color:#6b7280">Lead → Purchase (blended)</td>
+          <td style="padding:9px 6px;text-align:right;font-weight:700;color:#ea580c">1 paid lead → $948</td>
+          <td style="padding:9px 6px;font-size:11px;color:#9ca3af">Efrain Martinez (Facebook)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Revenue por Tipo de Producto — Oct 2026</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <tbody>
+        <tr style="border-bottom:1px solid #e5e7eb">
+          <td style="padding:9px 6px">🏢 Private Office</td>
+          <td style="padding:9px 6px;text-align:right;font-weight:700;color:#111827">$10,727</td>
+          <td style="padding:9px 6px;font-size:11px;color:#9ca3af">70.2% · 2 deals (DT: Denily, AV: Efrain)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #e5e7eb">
+          <td style="padding:9px 6px">🪑 Coworking Desk</td>
+          <td style="padding:9px 6px;text-align:right;font-weight:700;color:#7c3aed">$2,374</td>
+          <td style="padding:9px 6px;font-size:11px;color:#9ca3af">15.5% · 3 deals (AV: Gilad, Veronica, Nathan)</td>
+        </tr>
+        <tr style="border-bottom:1px solid #e5e7eb">
+          <td style="padding:9px 6px">💻 Virtual Office</td>
+          <td style="padding:9px 6px;text-align:right;font-weight:700;color:#0891b2">$1,308</td>
+          <td style="padding:9px 6px;font-size:11px;color:#9ca3af">8.6% · 2 deals (AV: Julieta, DT: Xavier)</td>
+        </tr>
+        <tr>
+          <td style="padding:9px 6px">🚪 Meeting Room</td>
+          <td style="padding:9px 6px;text-align:right;font-weight:700;color:#ea580c">$875</td>
+          <td style="padding:9px 6px;font-size:11px;color:#9ca3af">5.7% · 2 deals (AV: Claudia Q, Maria L)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TOURS CALENDAR OCTOBER -->
+<div class="section-label">Tours Calendarios — Octubre 2026</div>
+<div class="two-col" style="margin-bottom:20px">
+  <div class="card">
+    <h3>📍 Aventura — Tours Oct 2026</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:#f3f4f6">
+        <th style="padding:7px;text-align:left">Fecha</th><th style="padding:7px;text-align:left">Contacto</th><th style="padding:7px;text-align:left">Status</th><th style="padding:7px;text-align:left">Resultado</th>
+      </tr></thead>
+      <tbody>
+        <tr style="background:#f0fdf4"><td style="padding:7px">Sep 30</td><td style="padding:7px">Veronica Chijner</td><td style="padding:7px;color:#16a34a;font-weight:700">✅ Showed</td><td style="padding:7px;font-size:11px;color:#16a34a">WON Oct 20 · $798 Coworking</td></tr>
+        <tr><td style="padding:7px">Oct 2</td><td style="padding:7px">Alex Villa</td><td style="padding:7px;color:#6b7280">Confirmed</td><td style="padding:7px;font-size:11px;color:#9ca3af">Sin actualizar</td></tr>
+        <tr><td style="padding:7px">Oct 8</td><td style="padding:7px">Claudia Castañeda</td><td style="padding:7px;color:#6b7280">Confirmed</td><td style="padding:7px;font-size:11px;color:#9ca3af">Sin actualizar</td></tr>
+        <tr><td style="padding:7px">Oct 9</td><td style="padding:7px">Juana Wabnik</td><td style="padding:7px;color:#6b7280">Confirmed</td><td style="padding:7px;font-size:11px;color:#9ca3af">Sin actualizar</td></tr>
+        <tr><td style="padding:7px">Oct 12</td><td style="padding:7px">Kavir Nino</td><td style="padding:7px;color:#6b7280">Confirmed</td><td style="padding:7px;font-size:11px;color:#9ca3af">Sin actualizar</td></tr>
+        <tr><td style="padding:7px">Oct 12</td><td style="padding:7px">Roman Koles</td><td style="padding:7px;color:#6b7280">Confirmed</td><td style="padding:7px;font-size:11px;color:#9ca3af">Sin actualizar</td></tr>
+        <tr><td style="padding:7px">Oct 20</td><td style="padding:7px">Nathan Lamm</td><td style="padding:7px;color:#6b7280">Confirmed</td><td style="padding:7px;font-size:11px;color:#9ca3af">Sin actualizar</td></tr>
+        <tr><td style="padding:7px">Oct 23</td><td style="padding:7px">Belinda Elkaim</td><td style="padding:7px;color:#6b7280">Confirmed</td><td style="padding:7px;font-size:11px;color:#9ca3af">Sin actualizar</td></tr>
+        <tr><td style="padding:7px">Oct 27</td><td style="padding:7px">Juliana / Juan Felipe Hernandez</td><td style="padding:7px;color:#6b7280">Confirmed</td><td style="padding:7px;font-size:11px;color:#9ca3af">Sin actualizar</td></tr>
+        <tr style="background:#f3f4f6;font-weight:700"><td colspan="2" style="padding:7px">Total: 9 tours (incl. Sep 30)</td><td colspan="2" style="padding:7px;font-size:11px">8 Oct · 1 show confirmado (sep) · 8 "confirmed" sin estado final</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h3>📍 Downtown — Tours Oct 2026</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:#f3f4f6">
+        <th style="padding:7px;text-align:left">Fecha</th><th style="padding:7px;text-align:left">Contacto</th><th style="padding:7px;text-align:left">Status</th><th style="padding:7px;text-align:left">Resultado</th>
+      </tr></thead>
+      <tbody>
+        <tr style="background:#fef2f2"><td style="padding:7px">Oct 2</td><td style="padding:7px">Vanita Johnson</td><td style="padding:7px;color:#dc2626;font-weight:700">❌ No-show</td><td style="padding:7px;font-size:11px;color:#9ca3af">1er intento</td></tr>
+        <tr><td style="padding:7px">Oct 9</td><td style="padding:7px">Lorayne Fournier</td><td style="padding:7px;color:#6b7280">Confirmed</td><td style="padding:7px;font-size:11px;color:#9ca3af">Sin actualizar</td></tr>
+        <tr style="background:#f0fdf4"><td style="padding:7px">Oct 21</td><td style="padding:7px">Arnoldo Gutierrez</td><td style="padding:7px;color:#16a34a;font-weight:700">✅ Showed</td><td style="padding:7px;font-size:11px;color:#9ca3af">En seguimiento</td></tr>
+        <tr style="background:#fef2f2"><td style="padding:7px">Oct 22</td><td style="padding:7px">Vanita Johnson</td><td style="padding:7px;color:#dc2626;font-weight:700">❌ No-show</td><td style="padding:7px;font-size:11px;color:#9ca3af">2do intento · mismo contacto</td></tr>
+        <tr style="background:#fef2f2"><td style="padding:7px">Oct 28</td><td style="padding:7px">Juan Triana</td><td style="padding:7px;color:#dc2626;font-weight:700">❌ No-show</td><td style="padding:7px;font-size:11px;color:#9ca3af">—</td></tr>
+        <tr style="background:#f0fdf4"><td style="padding:7px">Oct 29</td><td style="padding:7px">Jean Santiago</td><td style="padding:7px;color:#16a34a;font-weight:700">✅ Showed</td><td style="padding:7px;font-size:11px;color:#9ca3af">En seguimiento</td></tr>
+        <tr style="background:#f3f4f6;font-weight:700"><td colspan="2" style="padding:7px">Total: 6 tours</td><td colspan="2" style="padding:7px;font-size:11px;color:#dc2626">Show rate: 33% · 2 showed · 3 no-shows · 1 sin actualizar</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- WON REVENUE DETAIL -->
+<div class="section-label">Won Revenue Detalle — Octubre 2026 (GHL CRM)</div>
+<div class="table-wrap" style="margin-bottom:20px">
+  <table>
+    <thead class="thead-all">
+      <tr>
+        <th>Cliente</th><th>Empresa</th><th>Pipeline</th><th>Producto</th><th>Fuente</th><th style="text-align:right">Revenue</th><th>Fecha Won</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- DOWNTOWN -->
+      <tr style="background:#f0f9ff">
+        <td colspan="7" style="padding:6px 10px;font-size:11px;font-weight:700;color:#0369a1;letter-spacing:0.5px">ICONIC DOWNTOWN</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Denily Acosta</td>
+        <td style="font-size:11px;color:#6b7280">Consulting IT</td>
+        <td>Downtown</td>
+        <td>🏢 Private Office</td>
+        <td>Walk in</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a">$9,779.00</td>
+        <td>Oct 1</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Xavier Papiol</td>
+        <td style="font-size:11px;color:#6b7280">Cumellas Rugs S.L.</td>
+        <td>Downtown</td>
+        <td>💻 Virtual Office</td>
+        <td>Referral</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a">$774.00</td>
+        <td>Oct 29</td>
+      </tr>
+      <tr style="background:#f0fdf4">
+        <td colspan="5" style="padding:7px 10px;font-weight:700">Subtotal Downtown</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a;padding:7px 10px">$10,553.00</td>
+        <td style="padding:7px 10px;font-size:11px">2 deals</td>
+      </tr>
+      <!-- AVENTURA -->
+      <tr style="background:#faf5ff">
+        <td colspan="7" style="padding:6px 10px;font-size:11px;font-weight:700;color:#7c3aed;letter-spacing:0.5px">ICONIC AVENTURA</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Efrain Martinez</td>
+        <td style="font-size:11px;color:#6b7280">EM Professional Services</td>
+        <td>Aventura</td>
+        <td>🏢 Private + Virtual</td>
+        <td style="color:#1877f2;font-weight:600">Facebook Ads ✓</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a">$948.00</td>
+        <td>Oct 7</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Nathan Krivosheyev</td>
+        <td style="font-size:11px;color:#6b7280">LowShipRate</td>
+        <td>Aventura</td>
+        <td>🪑 Coworking Desk</td>
+        <td>Directo</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a">$379.00</td>
+        <td>Oct 8</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Julieta Berrio</td>
+        <td style="font-size:11px;color:#6b7280">Fifth &amp; Cor</td>
+        <td>Aventura</td>
+        <td>💻 Virtual Office</td>
+        <td>CRM Manual</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a">$534.00</td>
+        <td>Oct 8</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Maria Laxell</td>
+        <td style="font-size:11px;color:#6b7280">Neko Healthcare</td>
+        <td>Aventura</td>
+        <td>🚪 Meeting Room</td>
+        <td>Referral</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a">$237.00</td>
+        <td>Oct 8</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Claudia Quintero</td>
+        <td style="font-size:11px;color:#6b7280">Nexsys Global</td>
+        <td>Aventura</td>
+        <td>🚪 Meeting Room</td>
+        <td>CRM Manual</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a">$638.40</td>
+        <td>Oct 13</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Veronica Chijner</td>
+        <td style="font-size:11px;color:#6b7280">Walworth Group</td>
+        <td>Aventura</td>
+        <td>🪑 Coworking Desk</td>
+        <td style="color:#7c3aed;font-weight:600">Tour Calendar ✓</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a">$798.00</td>
+        <td>Oct 20</td>
+      </tr>
+      <tr>
+        <td style="font-weight:600">Gilad Ben Tzur</td>
+        <td style="font-size:11px;color:#6b7280">Ben Tzur Property</td>
+        <td>Aventura</td>
+        <td>🪑 Coworking Desk</td>
+        <td>Walk in</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a">$1,197.00</td>
+        <td>Oct 29</td>
+      </tr>
+      <tr style="background:#f0fdf4">
+        <td colspan="5" style="padding:7px 10px;font-weight:700">Subtotal Aventura</td>
+        <td style="text-align:right;font-weight:700;color:#16a34a;padding:7px 10px">$4,731.40</td>
+        <td style="padding:7px 10px;font-size:11px">7 deals</td>
+      </tr>
+      <!-- GRAND TOTAL -->
+      <tr class="total-row" style="background:#f0fdf4!important">
+        <td colspan="5"><strong>TOTAL WON — OCTUBRE 2026</strong></td>
+        <td style="text-align:right;font-weight:800;color:#16a34a;font-size:15px">$15,284.40</td>
+        <td style="font-weight:700">9 deals</td>
+      </tr>
+      <tr style="background:#fefce8">
+        <td colspan="5" style="padding:8px 10px;font-size:12px;color:#92400e">
+          <strong>Blended ROAS:</strong> $15,284 won / $2,424 spend = <strong>6.30×</strong> &nbsp;·&nbsp;
+          <strong>Atrib. directa Meta:</strong> Efrain Martinez $948 (Facebook — Paid Social) &nbsp;·&nbsp;
+          <strong>Atrib. Tour Calendar:</strong> Veronica Chijner $798
+        </td>
+        <td style="padding:8px 10px;font-size:13px;font-weight:800;color:#ea580c;text-align:right">6.30×</td>
+        <td style="padding:8px 10px;font-size:11px;color:#92400e">ROAS</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PIPELINE STAGE INSIGHT -->
+<div class="insight-box" style="margin-bottom:10px">
+  <strong>✅ Octubre: mejor ROAS del trimestre (6.30×).</strong> Downtown dominó con $9,779 de Denily Acosta (Private Office, walk-in). Aventura cerró 7 deals diversificados — Coworking ($2,374), Private Office ($948 via Meta), Meeting Rooms ($875), Virtual Offices ($534).
+</div>
+<div class="insight-box warn" style="margin-bottom:10px">
+  <strong>⚠️ Downtown show rate bajo (33%):</strong> Vanita Johnson no-show ×2, Juan Triana no-show. Solo Arnoldo Gutierrez (Oct 21) y Jean Santiago (Oct 29) se presentaron. Se recomienda mejorar el flujo de confirmación 24h antes.
+</div>
+<div class="insight-box info" style="margin-bottom:20px">
+  <strong>📌 Aventura: 8 tours en "confirmed" sin actualización de status post-visita.</strong> No se puede calcular show-rate real. Los 2 deals que sí se cerraron (Veronica via tour, Efrain via Facebook) confirman que el pipeline está activo — actualizar estados en GHL para métricas precisas.
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Iconic Workspaces · Paid Media + CRM Dashboard · Octubre 2026 (Oct 1–29) &nbsp;·&nbsp;
+  Fuentes: Meta Ads (act_388480804021264) · Google Ads via Windsor.ai · GHL CRM (Aventura + Downtown pipelines) &nbsp;·&nbsp;
+  Actualizado: 29 Octubre 2026
+</div>
+
+</div>
+
+<script>
+// SPEND BY CAMPAIGN BAR CHART
+const spendCtx = document.getElementById('spendChart').getContext('2d');
+new Chart(spendCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Meta\nVO Purchase', 'Meta\nTailored Leads', 'Google\nVirtual Offices', 'Google\nMeeting Rooms'],
+    datasets: [{
+      label: 'Gasto Oct ($)',
+      data: [281.83, 992.61, 579.99, 569.87],
+      backgroundColor: ['#93c5fd','#3b82f6','#fca5a5','#ef4444'],
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => '$'+ctx.raw.toFixed(2) } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+      y: { grid: { color: '#f3f4f6' }, ticks: { callback: v => '$'+v } }
+    }
+  }
+});
+
+// DAILY SPEND LINE CHART
+const days = Array.from({length:29},(_,i)=>i+1);
+const voDaily = [24.17,18.89,6.68,3.66,18.59,39.81,50.11,21.29,15.00,21.54,28.46,18.65,20.79,24.23,13.87,11.60,13.46,25.34,24.78,29.64,13.31,19.64,7.42,0,38.65,20.86,21.22,15.85,12.48];
+const mrDaily = [24.24,16.47,0,25.97,38.99,28.34,23.11,17.19,23.08,20.34,1.79,24.65,22.41,18.14,18.90,26.37,0,21.35,35.49,33.70,13.10,20.27,17.47,0.08,0,39.09,28.03,21.00,10.30];
+const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+new Chart(dailyCtx, {
+  type: 'line',
+  data: {
+    labels: days.map(d => 'Oct '+d),
+    datasets: [
+      { label: 'Virtual Offices', data: voDaily, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,.1)', tension: 0.3, pointRadius: 2, fill: true },
+      { label: 'Meeting Rooms', data: mrDaily, borderColor: '#dc2626', backgroundColor: 'rgba(220,38,38,.05)', tension: 0.3, pointRadius: 2, borderDash: [4,2] }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } }, tooltip: { callbacks: { label: ctx => ctx.dataset.label+': $'+ctx.raw.toFixed(2) } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 9 }, maxTicksLimit: 10 } },
+      y: { grid: { color: '#f3f4f6' }, ticks: { callback: v => '$'+v } }
+    }
+  }
+});
+</script>
+</body>
+</html>
